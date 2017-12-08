@@ -1,0 +1,225 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>首页</title>
+	<style>
+		.page-container {
+			padding: 0;
+			overflow: hidden;
+		}
+		.VYMape>svg {
+			min-height: 1000px;
+		}
+		.footer {
+			position: fixed;
+			width: 100%;
+			bottom: 0;
+		}
+		#banner {
+			position: absolute;
+			top: 35%;
+			left: 50%;
+			-webkit-transform: translate(-50%,-50%);
+			-moz-transform: translate(-50%,-50%);
+			transform: translate(-50%,-50%);
+		}
+		#banner>span {
+			color: #999;
+			font-size: 68px;
+			font-style: oblique;
+			text-shadow: 5px 5px 5px #bbb;
+		}
+	</style>
+</head>
+<body>
+<div class="page-container">
+	<div class="VYMape" aria-hidden="true">
+		<div id="banner"><span>欢迎使用就手报关系统！</span></div>
+		<svg jsname="BUfzDd" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 710" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
+			<path fill="#efefee" d="M592.66 0c-15 64.092-30.7 125.285-46.598 183.777C634.056 325.56 748.348 550.932 819.642 809.5h419.672C1184.518 593.727 1083.124 290.064 902.637 0H592.66z"></path>
+			<path fill="#f6f6f6" d="M545.962 183.777c-53.796 196.576-111.592 361.156-163.49 490.74 11.7 44.494 22.8 89.49 33.1 134.883h404.07c-71.294-258.468-185.586-483.84-273.68-625.623z"></path>
+			<path fill="#f7f7f7" d="M153.89 0c74.094 180.678 161.088 417.448 228.483 674.517C449.67 506.337 527.063 279.465 592.56 0H153.89z"></path>
+			<path fill="#fbfbfc" d="M153.89 0H0v809.5h415.57C345.477 500.938 240.884 211.874 153.89 0z"></path>
+			<path fill="#ebebec" d="M1144.22 501.538c52.596-134.583 101.492-290.964 134.09-463.343 1.2-6.1 2.3-12.298 3.4-18.497 0-.2.1-.4.1-.6 1.1-6.3 2.3-12.7 3.4-19.098H902.536c105.293 169.28 183.688 343.158 241.684 501.638v-.1z"></path>
+			<path fill="#e1e1e1" d="M1285.31 0c-2.2 12.798-4.5 25.597-6.9 38.195C1321.507 86.39 1379.603 158.98 1440 257.168V0h-154.69z"></path>
+			<path fill="#e7e7e7" d="M1278.31,38.196C1245.81,209.874 1197.22,365.556 1144.82,499.838L1144.82,503.638C1185.82,615.924 1216.41,720.211 1239.11,809.6L1439.7,810L1439.7,256.768C1379.4,158.78 1321.41,86.288 1278.31,38.195L1278.31,38.196z"></path>
+		</svg>
+	</div>
+	<!--<p>登录次数：18 </p>-->
+	<!--<p>上次登录IP：222.35.131.79.1  上次登录时间：2014-6-14 11:19:55</p>-->
+	<!--<table class="table table-border table-bordered table-bg">-->
+		<!--<thead>-->
+			<!--<tr>-->
+				<!--<th colspan="7" scope="col">信息统计</th>-->
+			<!--</tr>-->
+			<!--<tr class="text-c">-->
+				<!--<th>统计</th>-->
+				<!--<th>资讯库</th>-->
+				<!--<th>图片库</th>-->
+				<!--<th>产品库</th>-->
+				<!--<th>用户</th>-->
+				<!--<th>管理员</th>-->
+			<!--</tr>-->
+		<!--</thead>-->
+		<!--<tbody>-->
+			<!--<tr class="text-c">-->
+				<!--<td>总数</td>-->
+				<!--<td>92</td>-->
+				<!--<td>9</td>-->
+				<!--<td>0</td>-->
+				<!--<td>8</td>-->
+				<!--<td>20</td>-->
+			<!--</tr>-->
+			<!--<tr class="text-c">-->
+				<!--<td>今日</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+			<!--</tr>-->
+			<!--<tr class="text-c">-->
+				<!--<td>昨日</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+			<!--</tr>-->
+			<!--<tr class="text-c">-->
+				<!--<td>本周</td>-->
+				<!--<td>2</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+			<!--</tr>-->
+			<!--<tr class="text-c">-->
+				<!--<td>本月</td>-->
+				<!--<td>2</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+				<!--<td>0</td>-->
+			<!--</tr>-->
+		<!--</tbody>-->
+	<!--</table>-->
+	<!--<table class="table table-border table-bordered table-bg mt-20">-->
+		<!--<thead>-->
+			<!--<tr>-->
+				<!--<th colspan="2" scope="col">服务器信息</th>-->
+			<!--</tr>-->
+		<!--</thead>-->
+		<!--<tbody>-->
+			<!--<tr>-->
+				<!--<th width="30%">服务器计算机名</th>-->
+				<!--<td><span id="lbServerName">http://127.0.0.1/</span></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器IP地址</td>-->
+				<!--<td>192.168.1.1</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器域名</td>-->
+				<!--<td>www.h-ui.net</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器端口 </td>-->
+				<!--<td>80</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器IIS版本 </td>-->
+				<!--<td>Microsoft-IIS/6.0</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>本文件所在文件夹 </td>-->
+				<!--<td>D:\WebSite\HanXiPuTai.com\XinYiCMS.Web\</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器操作系统 </td>-->
+				<!--<td>Microsoft Windows NT 5.2.3790 Service Pack 2</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>系统所在文件夹 </td>-->
+				<!--<td>C:\WINDOWS\system32</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器脚本超时时间 </td>-->
+				<!--<td>30000秒</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器的语言种类 </td>-->
+				<!--<td>Chinese (People's Republic of China)</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>.NET Framework 版本 </td>-->
+				<!--<td>2.050727.3655</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器当前时间 </td>-->
+				<!--<td>2014-6-14 12:06:23</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器IE版本 </td>-->
+				<!--<td>6.0000</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>服务器上次启动到现在已运行 </td>-->
+				<!--<td>7210分钟</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>逻辑驱动器 </td>-->
+				<!--<td>C:\D:\</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>CPU 总数 </td>-->
+				<!--<td>4</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>CPU 类型 </td>-->
+				<!--<td>x86 Family 6 Model 42 Stepping 1, GenuineIntel</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>虚拟内存 </td>-->
+				<!--<td>52480M</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>当前程序占用内存 </td>-->
+				<!--<td>3.29M</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>Asp.net所占内存 </td>-->
+				<!--<td>51.46M</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>当前Session数量 </td>-->
+				<!--<td>8</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>当前SessionID </td>-->
+				<!--<td>gznhpwmp34004345jz2q3l45</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td>当前系统用户名 </td>-->
+				<!--<td>NETWORK SERVICE</td>-->
+			<!--</tr>-->
+		<!--</tbody>-->
+	<!--</table>-->
+</div>
+<footer class="footer mt-20">
+	<div class="container">
+		<p style="text-shadow: 1px 1px 1px #aaa;">
+			Copyright &copy;2017 就手报关 v1.0 All Rights Reserved.<br></p>
+	</div>
+</footer>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/h-ui/js/H-ui.min.js"></script>
+
+</body>
+</html>

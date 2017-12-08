@@ -1,0 +1,344 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>订单导出</title>
+	<style>
+		.page-container {
+			padding-top: 10px;
+		}
+	</style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 订单导出 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<!--查询-->
+	<div hidden class="search text-c">
+		<input type="text" name="batch_note" id="note_search" placeholder=" 批次备注" style="width:250px" class="input-text">
+		<button name="" id="" class="btn btn-success" onclick="searchFun(false)" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜备注</button>
+	</div>
+	<form id="search-form" action="" method="post">
+		<div class="panel mt-20">
+			<div class="panel-heading">
+				<span>查询条件</span>
+				<a href="javascript:;" onclick="searchAdv()" class="directive-close"><i class="layui-icon">&#x1006;</i></a>
+				<span class="search-btns r mr-15">
+					<a class="layui-btn layui-btn-normal layui-btn-mini" title="确认查询" href="javascript:void(0)" onclick="searchFun(true)"><i class="Hui-iconfont">&#xe665;</i></a>
+					<a class="layui-btn layui-btn-danger layui-btn-mini" title="重置" href="javascript:document.getElementById('search-form').reset()"><i class="Hui-iconfont">&#xe66b;</i></a>
+				</span>
+			</div>
+			<div class="panel-body">
+				<div class="search-adv">
+					<ul class="search-ul">
+						<li>
+							<button class="btn btn-primary tab">批次号：</button>
+							<span class="select-ctrl">
+								<select name="batch_time_eq" class="select">
+									<option value="0">等于</option>
+									<option value="1">大于</option>
+									<option value="2">小于</option>
+									<option value="3">不等于</option>
+									<option value="4">含有（模糊）</option>
+								</select>
+							</span>
+							<input style="width: 30%" type="text" name="batch_time" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">导入时间的范围：</button>
+							{literal}
+							<input type="text" name="create_time_begin" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })" id="logmin" class="input-text Wdate">
+							-
+							<input type="text" name="create_time_end" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })" id="logmax" class="input-text Wdate">
+							{/literal}
+						</li>
+						<li>
+							<button class="btn btn-primary tab">批次备注：</button>
+							<span class="select-ctrl">
+							<select name="batch_note_eq" class="select">
+								<option value="0">等于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="batch_note" class="input-text main-input">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--<div class="search-btns text-c mt-20">-->
+			<!--<input class="btn btn-primary radius" type="submit" value="查询" onclick="searchFun(true)" style="width: 80px;line-height: 1.5!important">-->
+			<!--<input class="btn btn-primary radius" type="reset" value="清空" style="width: 80px;line-height: 1.5!important;">-->
+		<!--</div>-->
+	</form>
+	<!--数据显示-->
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="r">
+			<a href="javascript:;" onclick="searchAdv()" class="btn btn-primary radius"><i class="layui-icon">&#xe615;</i> 高级查询</a>
+			<!--<a class="btn  btn-success radius" data-title="批量导出就手订单" onclick="exportTable(0)" href="javascript:;"><i class="Hui-iconfont">&#xe644;</i> 批量导出就手订单</a>-->
+			<a class="btn  btn-success radius" data-title="批量导出清单" onclick="exportTable(1)" href="javascript:;"><i class="Hui-iconfont">&#xe644;</i> 批量导出清单</a>
+			<a class="btn  btn-success radius" data-title="批量导出入库单" onclick="exportTable(2)" href="javascript:;"><i class="Hui-iconfont">&#xe644;</i> 批量导出入库单</a>
+			<a class="btn  btn-success radius" data-title="批量导出运单" onclick="exportTable(3)" href="javascript:;"><i class="Hui-iconfont">&#xe644;</i> 批量导出运单</a>
+			<a class="btn  btn-success radius" data-title="批量一次性导出" onclick="exportTable(4)" href="javascript:;"><i class="Hui-iconfont">&#xe641;</i> 批量导出三单</a>
+			<!--<a id="upload_excel" class="btn  btn-danger radius" data-title="导入Excel文件" href="javascript:;"><i class="Hui-iconfont">&#xe642;</i> 导入Excel文件</a>-->
+			<!--<span id="filetips" hidden style="padding: 0 10px;color: #999;vertical-align: middle"></span>-->
+			<!--<a id="upcommit" class="btn  btn-secondary radius" onclick="uploading(this)" data-title="开始导入" href="javascript:;"><i class="Hui-iconfont">&#xe645;</i> 开始导入</a>-->
+		</span>
+		<!--<span class="l total">共有数据：<strong></strong> 条</span>-->
+		<span class="l total">批次列表</span>
+	</div>
+	<div class="datas">
+		<table id="orderLists" lay-filter="olist"></table>
+	</div>
+	<form hidden id="postData" action="{:url('admin/Order/exportData')}" method="post">
+		<input type="text" name="ex_info">
+	</form>
+	<form id="batch_ex" hidden action="{:url('admin/Order/exportData')}" method="post">
+	</form>
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/laypage/1.2/laypage.js"></script>
+<!--<a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="jiushou_ex">导出就手订单</a>-->
+<script type="text/html" id="exportTools">
+	<a class="layui-btn layui-btn-mini" lay-event="list_ex">导出清单</a>
+	<a class="layui-btn layui-btn-mini" lay-event="entry_ex">导出入库单</a>
+	<a class="layui-btn layui-btn-mini" lay-event="transprot_ex">导出运单</a>
+	<a class="layui-btn layui-btn-mini" lay-event="all_ex">导出三单</a>
+</script>
+<script type="text/html" id="declare">
+	{{# if (d.declare_status==='0') { }}
+	<a title="报关" class="layui-btn layui-btn-normal layui-btn-mini" lay-event="declare">报关</a>
+	{{# }else{ }}
+		<span title="已报关" style="color: #5EB95E">已报关</span>
+	{{# } }}
+</script>
+<script type="text/javascript">
+	setAlign(['batch_note'],'left');
+    $('#search-form button').click(function () {
+        return false;
+    });
+    $(document).ready(function() {
+        $.get('{:url("admin/order/getLastBatchs")}',function (res) {
+            var html = '<select  id="batch-select" style="width: 17%;height: 31px;vertical-align: middle;" class="select"><option value="0">&nbsp; 最近十条</option>';
+            if (res.data.length>0) {
+                $(res.data).each(function (index,item) {
+                    html+= '<option value='+(index+1)+'>'+item.batch_time+'</option>';
+                });
+                html+= '</select>';
+            }else {
+                html+= '</select>';
+            }
+            $('input[name="batch_time"]').parent()[0].insertAdjacentHTML('beforeEnd',html);
+            $('#batch-select').change(function () {
+                if ($(this).val()!=='0') {
+                    $(this).css('width','4%');
+                    $('input[name="batch_time"]').css('width','43%')
+                    $('input[name="batch_time"]').val($(this).find("option:selected").text());
+                }else{
+                    $('input[name="batch_time"]').val("");
+                }
+            });
+        });
+	});
+layui.config({
+	debug : true,
+	version : true	 //清除缓存
+});
+//$.ajax({
+//    url: "{:url(\'order/getDatas\')}",
+//    success: function (res) {
+//        //执行渲染
+//
+//    },
+//    error: function () {
+//        layer.open({
+//            msg: "出错啦，快找管理猿！"
+//        });
+//    }
+//});
+
+//表格方法式渲染
+layui.use(['table','layer','upload'],function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var $ = layui.jquery;
+    var upload = layui.upload;
+    table.render({
+        elem: '#orderLists' //指定原始表格元素选择器（推荐id选择器）
+        ,id: 'main'
+//        ,height: 288 //容器高度
+//        ,data: res.data
+		,url: '{:url(\'admin/order/export\')}'
+//        ,initSort: {
+//            field: 'autonum' //排序字段，对应 cols 设定的各字段名
+//            ,type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+//        }
+//		,height: 'full-600'
+        ,cols: [[ //标题栏
+            {checkbox: true}, //默认全选
+			{field: 'autonum', title: 'No.',filter: 'autonum', width: 80, sort: true}
+            ,{field: 'batch_time', title: '批次号', width: 230, sort: true}
+            ,{field: 'create_time', title: '导入时间', width: 230, sort: true}
+            ,{field: 'batch_note', title: '备注', width: 500}
+            ,{field: 'declare_status', title: '报关', width: 75, templet: '#declare',fixed: "right"}
+            ,{field: 'ctrl', title: '导出操作', width: 510, toolbar: "#exportTools",fixed: "right"}
+        ]]
+        ,skin: 'row' //表格风格
+        ,even: true
+        ,page: true //是否显示分页
+        ,limits: [5,10,15,20]
+        ,limit: 10 //每页默认显示的数量
+        ,done: function(res, curr, count){
+            //如果是异步请求数据方式，res即为你接口返回的信息。
+            //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+            $(".total").children("strong").html(count);
+        }
+    });
+
+//同步服务端排序
+//    table.on('sort(olist)', function(obj){ //注：tool是工具条事件名，autonum是table原始容器的属性 lay-filter="对应的值"
+////        console.log(obj.field); //当前排序的字段名
+////        console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+////        console.log($(this)); //当前排序的 th 对象
+//
+//        //尽管我们的 table 自带排序功能，但并没有请求服务端。
+//        //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，如：
+//        table.reload('main', {
+//            initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+//            ,where: { //请求参数
+//                field: obj.field //排序字段
+//                ,order: obj.type //排序方式
+//            }
+//        });
+//    });
+
+	//监听导出操作工具条
+	table.on("tool(olist)",function (obj) {
+	    var data = obj.data;
+		if (obj.event === "jiushou_ex") {
+		    $("input[name='ex_info']").val(data.batch_time+"|"+1);
+            $("#postData").submit();
+		}
+		else if(obj.event === "list_ex") {
+            $("input[name='ex_info']").val(data.batch_time+"|"+2);
+            $("#postData").submit();
+		}else if(obj.event === "entry_ex") {
+            $("input[name='ex_info']").val(data.batch_time+"|"+3);
+            $("#postData").submit();
+        }else if(obj.event === "transprot_ex") {
+            $("input[name='ex_info']").val(data.batch_time+"|"+4);
+            $("#postData").submit();
+        }else if(obj.event === "all_ex") {
+            $("input[name='ex_info']").val(data.batch_time+"|"+5);
+            $("#postData").submit();
+        }else if(obj.event === "declare") {
+            layer.confirm('确定报关？',function (index) {
+                $.post('{:url("admin/Order/declaration")}',{batch: data.batch_time},function (res) {
+                    if (res.code == '0000') {
+                        obj.update({declare_status: 1});
+                        layer.msg(res.msg,{time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.close(index);
+                        if (typeof res !== 'string') {
+                            layer.open({content: res.msg});
+                        }else{
+                            //无权限时的提示
+                            layer.open({content: res});
+                        }
+                    }
+                });
+            });
+        }
+    })
+});
+
+$(document).ready(function () {
+    $("#upcommit").hide();
+});
+
+function searchFun(type) {
+	if (type) {
+
+	}else{
+	    if (hasString($("#note_search"))>0) {
+			$.get();
+		}else{
+	        layui.layer.msg("请输入正确的数据！",{time:1000});
+		}
+	}
+}
+
+//function hasString(obj) {
+//    obj.value == undefined ? obj = obj[0] : "";
+//	return obj.value.replace(/(^\s*)|(\s*$)/g,"").length
+//}
+
+//上传请求时的动画
+function uploading() {
+    layer.load(0,{shade:0.3}); //换了种风格
+}
+
+//导出表格时，请求数据的组装
+function exportTable(num) {
+    layui.use(['table','layer'],function (table,layer) {
+        var $ = layui.jquery;
+		var checkStatus = table.checkStatus('main');
+		data = checkStatus.data;
+		if (data.length>0) {
+			//将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+            html = '';
+            html+= "<input type=\"text\" name=\"datatype\" value='"+num+"'>";
+            $(data).each(function (index,obj) {
+                html+= "<input type=\"text\" name=\"data[]\" value='"+obj.batch_time+"'>";
+			});
+            $("#batch_ex").append(html);
+            $("#batch_ex").submit().empty();
+        }else{
+		    layer.msg("没选择数据呀",{'time':"1000"});
+		}
+    });
+}
+
+//搜索处理函数
+function searchFun(type) {
+    if (type) {
+        layui.table.reload('main', {
+            url: "{:url('admin/Search/searchByMultiple')}",
+            method: 'post'
+            ,where: {data:$('#search-form').serializeArray(),type: 'oexport_multiple'}
+        });
+        $('#search-form').submit(function (e) {
+            return false;
+        });
+    }else{
+        if (hasString($("#note_search"))>0) {
+            layui.table.reload('main', {
+                url: "{:url('admin/Search/searchBySingle')}",
+                method: 'get'
+                ,where: {condition: $("#note_search").val(),type: 'oexport_single'}
+            });
+        }else{
+            layui.layer.msg("请输入正确的数据！",{time:1000});
+        }
+    }
+}
+
+//显示高级查询
+function searchAdv() {
+//    $(".search").toggle("500");
+    $("#search-form").toggle("1000");
+}
+
+</script> 
+</body>
+</html>

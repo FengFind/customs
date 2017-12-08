@@ -1,0 +1,530 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+	<title>新增图片</title>
+	<style>
+		.cl {
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		#order-details .panel-heading {
+			height: 40px;
+			padding: 0 15px;
+		}
+		#order-details .panel-heading span {
+			line-height: 40px;
+		}
+		.oh-content span:first-child,.oh-content span:last-child {
+			vertical-align: middle;
+		}
+		#ohead-submit .btn {
+			width: 100px;
+		}
+		.panel-body {
+			overflow-x: hidden;
+		}
+		.og-tip {
+			color: #DD514C;
+			line-height: 30px;
+		}
+		.tb-wrap {
+			border: solid 1px #EEEEEE;
+			border-radius: 5px;
+			padding: 5px;
+		}
+		#oe-details .layui-table-view .layui-table th:nth-child(3) {
+			color: #DD514C;
+		}
+	</style>
+</head>
+<body>
+<!--<a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:4px" href="javascript:layui.table.reload('oerr-main');layui.table.reload('osucc-main');" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>-->
+<!--<a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href)" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>-->
+<div class="page-container">
+	<!--<div id="order-details" class="panel mt-20">-->
+		<!--<div class="panel-heading">-->
+			<!--<span>订单基本信息</span>-->
+			<!--&lt;!&ndash;<a title="修改" class="layui-btn layui-btn-mini" lay-event="edit"><i class="Hui-iconfont">&#xe6df;</i></a>&ndash;&gt;-->
+			<!--&lt;!&ndash;<a href="javascript:;" onclick="searchAdv()" class="directive-close"><i class="layui-icon">&#x1006;</i></a>&ndash;&gt;-->
+		<!--</div>-->
+		<!--<div class="panel-body container-fluid">-->
+		<!--</div>-->
+		<!--<div id="ohead-submit" class="text-c">-->
+			<!--<a id="ohead-submit-btn" onclick="commitHead()" class="btn  btn-primary radius mt-10 mb-10" data-title="确认修改" href="javascript:;"><i class="Hui-iconfont">&#xe6e1;</i> 确认修改</a>-->
+		<!--</div>-->
+	<!--</div>-->
+	<div class="tb-wrap mt-20">
+		<div class="cl pd-5 bg-1 bk-gray text-c">
+			<span  class="l" href="javascript:;" style="color: #DD514C;line-height: 30px;"><i class="layui-icon"></i> 异常数据</span>
+			<span class="r">
+				<a class="btn  btn-danger radius ml-10" data-title="批量删除" onclick="delErrBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+				<span class="upbtn-wrap text-c mb-5 ">
+					<a id="" class="btn  btn-warning radius" onclick="emitAll()" data-title="更改所有并检测" href="javascript:;"><i class="Hui-iconfont">&#xe6f7;</i> 提交所有更改并检测</a>
+				</span>
+			</span>
+			<span class="og-tip">通过将鼠标悬停在粉红色字上可以查看错误信息，您可以单击单元格来修改对应的内容！</span>
+			<!--<span class="r total top-total">共有数据：<strong></strong> 条</span>-->
+		</div>
+		<div id="oe-details" class="datas">
+			<table id="order-err" lay-filter="oerr"></table>
+		</div>
+	</div>
+
+	<div class="tb-wrap mt-40">
+		<div class="cl pd-5 bg-1 bk-gray text-c">
+			<span href="javascript:;" class="l" style="color: #47A8FC;line-height: 30px;"><i class="layui-icon"></i> 正确数据</span>
+		<span class="r">
+
+			<a class="btn  btn-danger radius ml-10" data-title="批量删除" onclick="delBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+			<span class="upbtn-wrap text-c mb-5">
+				<a id="upcommit" class="btn  btn-secondary radius" onclick="commitAll()" data-title="确定导入" href="javascript:;"><i class="Hui-iconfont">&#xe645;</i> 确定导入</a>
+			</span>
+		</span>
+			<span class="og-tip">您可以单击单元格来修改对应的内容！</span>
+			<!--<span class="r total bot-total">共有数据：<strong></strong> 条</span>-->
+		</div>
+		<div id="os-details" class="datas">
+			<table id="order-succ" lay-filter="osucc"></table>
+		</div>
+	</div>
+
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/html" id="etools">
+	<a title="提交更改并检测" class="layui-btn layui-btn-mini" lay-event="commit" style="background: #F37B1D"><i class="Hui-iconfont">&#xe6f7;</i></a>
+	<a title="删除" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6e2;</i></a>
+</script>
+<script type="text/html" id="tools">
+	<a title="修改" class="layui-btn layui-btn-mini layui-btn-mini" lay-event="commit" style="background: #5A98DE"><i class="Hui-iconfont">&#xe6e1;</i></a>
+	<a title="删除" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6e2;</i></a>
+</script>
+<script type="text/html" id="err">
+	<span class="badge badge-danger radius">{{ Object.keys(d.error_info).length }}</span>
+</script>
+
+<script type="text/javascript">
+    layui.config({
+        debug : true,
+        version : true	 //清除缓存
+    });
+    $(document).ready(function () {
+		var html = "";
+		var oe_fields = ["order_no","goods_value","freight","discount","tax_total","actural_paid","currency","buyer_name","buyer_telephone","buyer_id_type","buyer_id_number","consignee","consignee_telephone","consignee_address",'logistics_no','trade_mode','a_country','freight2','insured_fee','wrap_type','gross_weight','net_weight','bill_no','voyage_no','pack_no',"gnum","item_name","qty","unit","qty1","unit1","country","hscode","gtype","price","total_price","item_currency"];
+		$.each(oe_fields,function (index,field) {
+			html+= '<script type="text/html\" id="oe-span'+(index+1)+'">'+
+						'{{# if(\''+field+'\' in d.error_info) { }}'+
+				        	'{{# if(d.'+field+' !== "") { }}'+
+            					'<span data-toggle="tooltip" data-placement="top" title="{{ d.error_info.'+field+' }}" style="color: #F581B1;">{{ d.'+field+' }}</span>'+
+                			'{{# }else{ }}'+
+                				'<span data-toggle="tooltip" data-placement="top" title="{{ d.error_info.'+field+' }}" style="color: #F581B1;">*</span>'+
+                			'{{# } }}'+
+						'{{# }else{ }}'+
+            				'<span>{{ d.'+field+' }}</span>'+
+            			'{{# } }}'+
+					'<\/script>';
+			$(document.body).append(html);
+        });
+		setAlign(['item_name','consignee_address'],'left');
+    });
+    function spliceData(obj) {
+        $(error_arr).each(function (i,item) {
+            if (obj.autonum == item.autonum) {
+                error_arr.splice(i,1);
+            }
+        });
+    }
+    var preview_data = $.parseJSON($(parent.document).find('#preview-data').html());
+    var error_arr = preview_data.error_arr;
+    var nres = "";
+    layui.use(['laytpl','jquery','table'],function () {
+        var laytpl = layui.laytpl;
+        var $ = layui.jquery;
+        var table = layui.table;
+		var flag = false;
+		if (error_arr == null) {
+            layer.msg("恭喜！所有订单信息都正确！");
+            $('.tb-wrap:first-child').hide();
+            flag = true;
+		}
+//        var headtpl = $("#ohead-show").html();
+//        var order_no = "{$orderNo='11111'}";
+//        var result = "";
+//        var preview_data = $.parseJSON($(parent.document).find('#preview-data').html());
+        //请求对应订单数据
+//        $.ajax({
+//            url:"{:url('admin/Order/getOrderDetails')}",
+//            data: {"orderNo":order_no},
+//            async : false,
+//            type: "post",
+//            success: function (data) {
+//                result = data.data;
+//            }
+//        });
+//        if (!result.length) {
+//            var reg = /(type\/list)|(type\/details)/;
+//            clrefresh(reg,true);
+//            return;
+//        }
+//        var headdata = result[0]; //取第一条数据的信息，因为头信息都一样
+        //订单信息方法式渲染
+		//非法信息
+        table.render({
+            elem: "#order-err",
+            id: "oerr-main",
+			data: error_arr,
+//            url: "{:url('admin/Order/getPreviewData')}",
+//			height: 200,
+            cols: [[
+                {checkbox: true} //默认全选
+                ,{field: 'autonum', title: 'No.',width: 80, sort: true}
+                ,{field: '', title: '错误数',width: 100,templet: '#err',sort: true}
+//                ,{field: 'order_no', title: '订单编号', width: 170,templet: '#oe-span1', sort: true, edit: "text"}
+                ,{field: 'bill_no', title: '提单号', width: 160, sort: true, edit: "text",templet: '#oe-span23'}
+                ,{field: 'logistics_no', title: '物流运单编号', width: 150, sort: true, edit: "text",templet: '#oe-span15'}
+                ,{field: 'goods_value', title: '商品价格', width: 120, sort: true, edit: "text",templet: '#oe-span2'}
+                ,{field: 'freight', title: '运杂费', width: 120, sort: true, edit: "text",templet: '#oe-span3'}
+                ,{field: 'discount', title: '非现金抵扣金额', width: 160, sort: true, edit: "text",templet: '#oe-span4'}
+                ,{field: 'tax_total', title: '代扣税款', width: 120, sort: true, edit: "text",templet: '#oe-span5'}
+                ,{field: 'actural_paid', title: '实际支付金额', width: 140, sort: true, edit: "text",templet: '#oe-span6'}
+                ,{field: 'currency', title: '币制', width: 90, edit: "text",templet: '#oe-span7'}
+//                ,{field: 'buyer_regno', title: '订购人注册号', width: 90, edit: "text"}
+                ,{field: 'buyer_name', title: '订购人姓名', width: 100, edit: "text",templet: '#oe-span8'}
+                ,{field: 'buyer_telephone', title: '订购人电话', width: 140, edit: "text",templet: '#oe-span9'}
+                ,{field: 'buyer_id_type', title: '订购人证件类型', width: 130, edit: "text",templet: '#oe-span10'}
+                ,{field: 'buyer_id_number', title: '订购人证件号码', width: 180, edit: "text",templet: '#oe-span11'}
+                ,{field: 'consignee', title: '收货人姓名', width: 100, edit: "text",templet: '#oe-span12'}
+                ,{field: 'consignee_telephone', title: '收货人电话', width: 140, edit: "text",templet: '#oe-span13'}
+                ,{field: 'consignee_address', title: '收货地址', width: 300, edit: "text",templet: '#oe-span14'}
+                ,{field: 'trade_mode', title: '贸易方式', width: 120, sort: true, edit: "text",templet: '#oe-span16'}
+//                ,{field: 'books_no', title: '账册编号', width: 120, sort: true}
+//                ,{field: 'license_no', title: '许可证件号', width: 120, sort: true}
+                ,{field: 'a_country', title: '起运国', width: 100, sort: true, edit: "text",templet: '#oe-span17'}
+                ,{field: 'freight2', title: '运费', width: 100, sort: true, edit: "text",templet: '#oe-span18'}
+                ,{field: 'insured_fee', title: '保费', width: 100, sort: true, edit: "text",templet: '#oe-span19'}
+                ,{field: 'wrap_type', title: '包装种类', width: 120, sort: true, edit: "text",templet: '#oe-span20'}
+                ,{field: 'gross_weight', title: '毛重(公斤)', width: 130, sort: true, edit: "text",templet: '#oe-span21'}
+                ,{field: 'net_weight', title: '净重(公斤)', width: 130, sort: true, edit: "text",templet: '#oe-span22'}
+                ,{field: 'voyage_no', title: '航班航次号', width: 130, sort: true, edit: "text",templet: '#oe-span24'}
+                ,{field: 'pack_no', title: '件数', width: 100, sort: true, edit: "text",templet: '#oe-span25'},
+                {field: "gnum",title: "商品序号", width: 120, sort: true, edit: "text",templet: '#oe-span26'},
+                {field: "item_name",title: "企业商品名称",width: 200,edit: 'text',templet: '#oe-span27'},
+                {field: "qty",title: "数量",width: 100, sort: true,edit: 'text',templet: '#oe-span28'},
+                {field: "unit",title: "计量单位",width: 130, sort: true,edit: 'text',templet: '#oe-span29'},
+                {field: "qty1",title: "法定数量",width: 130, sort: true,edit: 'text',templet: '#oe-span30'},
+                {field: "unit1",title: "法定计量单位",width: 150, sort: true,edit: 'text',templet: '#oe-span31'},
+                {field: "country",title: "原产国",width: 80,edit: 'text',templet: '#oe-span32'},
+                {field: "hscode",title: "海关商品编码(Hscode)",width: 185, sort: true,edit: 'text',templet: '#oe-span33'},
+//                {field: "gjcode",title: "国检商品编号",width: 150, sort: true,edit: 'text',templet: '#oe-span23'},
+                {field: "gtype",title: "商品规格型号",width: 120,edit: 'text',templet: '#oe-span34'},
+                {field: "price",title: "单价",width: 100, sort: true,edit: 'text',templet: '#oe-span35'},
+                {field: "total_price",title: "总价",width: 100, sort: true,edit: 'text',templet: '#oe-span36'},
+                {field: "item_currency",title: "币制",width: 70,edit: 'text',templet: '#oe-span37'},
+                {field: 'ctrl', title: '操作', width: 100, toolbar: "#etools", fixed: "right",templet: '#oe-span38'}
+            ]],
+//            skin: "row",
+            even: true,
+            page: true,
+            limits: [5,10,20,40,80],
+            limit: 8,
+            done: function (res,curr,count) {
+                $(".top-total").children("strong").html(count);
+                if (count == 0) {
+                    layer.msg("恭喜！所有订单信息都正确！");
+                    $('.tb-wrap:first-child').hide();
+                    flag = true;
+				}else{
+                    $('.tb-wrap:first-child').show();
+                    flag = false;
+				}
+            }
+        });
+        //监听非法信息操作工具条
+        table.on("tool(oerr)",function (obj) {
+            var data = obj.data;
+            if (obj.event == "commit") {
+                var url = "{:url('admin/Order/preview')}";
+                data = {datas: data,req: 'save'};
+                $.post(url,data,function (res) {
+                    if (res.code == "0000") {
+                        if (res.data.error_arr == null) {
+                            layer.msg(res.msg,{time: 2000});
+                            spliceData(obj.data);
+                            table.reload('osucc-main');
+						}else {
+                            $(error_arr).each(function (index,obj) {
+								if (obj.autonum == res.data.error_arr[0].autonum) {
+								    obj.error_info = res.data.error_arr[0].error_info;
+								}
+                            });
+                            layer.msg("数据仍存在错误！",{time: 2000});
+						}
+                        table.reload('oerr-main');
+                    }else{
+                        layer.open({
+                            content: res.msg
+                        });
+                    }
+                });
+            }else if(obj.event == "del") {
+                layer.confirm('确定删除？', function(index){
+                    spliceData(obj.data);
+					obj.del();
+					layer.close(index);
+					table.reload('oerr-main');
+                });
+            }
+        });
+
+        //合法信息
+        table.render({
+            elem: "#order-succ",
+            id: "osucc-main",
+            url: "{:url('admin/Order/preview')}",
+////			height: 200,
+            where: {batch_no: preview_data.batch_no,req: 'get'},
+            cols: [[
+                {checkbox: true} //默认全选
+                ,{field: 'autonum', title: 'No.',width: 80, sort: true}
+//                ,{field: 'order_no', title: '订单编号', width: 170, sort: true}
+                ,{field: 'bill_no', title: '提单号', width: 160, sort: true, edit: "text"}
+                ,{field: 'logistics_no', title: '物流运单编号', width: 150, edit: "text", sort: true}
+                ,{field: 'goods_value', title: '商品价格', width: 120, sort: true, edit: "text"}
+                ,{field: 'freight', title: '运杂费', width: 120, sort: true, edit: "text"}
+                ,{field: 'discount', title: '非现金抵扣金额', width: 160, sort: true, edit: "text"}
+                ,{field: 'tax_total', title: '代扣税款', width: 120, sort: true, edit: "text"}
+                ,{field: 'actural_paid', title: '实际支付金额', width: 140, sort: true, edit: "text"}
+                ,{field: 'currency', title: '币制', width: 90, edit: "text"}
+//                ,{field: 'buyer_regno', title: '订购人注册号', width: 90, edit: "text"}
+                ,{field: 'buyer_name', title: '订购人姓名', width: 100, edit: "text"}
+                ,{field: 'buyer_telephone', title: '订购人电话', width: 140, edit: "text"}
+                ,{field: 'buyer_id_type', title: '订购人证件类型', width: 130, edit: "text"}
+                ,{field: 'buyer_id_number', title: '订购人证件号码', width: 180, edit: "text"}
+                ,{field: 'consignee', title: '收货人姓名', width: 100, edit: "text"}
+                ,{field: 'consignee_telephone', title: '收货人电话', width: 140, edit: "text"}
+                ,{field: 'consignee_address', title: '收货地址', width: 300, edit: "text"}
+                ,{field: 'trade_mode', title: '贸易方式', width: 120, edit: "text", sort: true}
+//                ,{field: 'books_no', title: '账册编号', width: 120, sort: true, edit: "text"}
+//                ,{field: 'license_no', title: '许可证件号', width: 120, sort: true, edit: "text"}
+                ,{field: 'a_country', title: '起运国', width: 100, sort: true, edit: "text"}
+                ,{field: 'freight2', title: '运费', width: 100, sort: true, edit: "text"}
+                ,{field: 'insured_fee', title: '保费', width: 100, sort: true, edit: "text"}
+                ,{field: 'wrap_type', title: '包装种类', width: 120, sort: true, edit: "text"}
+                ,{field: 'gross_weight', title: '毛重(公斤)', width: 130, sort: true, edit: "text"}
+                ,{field: 'net_weight', title: '净重(公斤)', width: 130, sort: true, edit: "text"}
+                ,{field: 'voyage_no', title: '航班航次号', width: 130, sort: true, edit: "text"}
+                ,{field: 'pack_no', title: '件数', width: 100, sort: true, edit: "text"},
+                {field: "gnum",title: "商品序号", width: 120, sort: true, edit: "text"},
+                {field: "item_name",title: "企业商品名称",width: 260,edit: 'text'},
+                {field: "qty",title: "数量",width: 100, sort: true,edit: 'text'},
+                {field: "unit",title: "计量单位",width: 130, sort: true,edit: 'text'},
+                {field: "qty1",title: "法定数量",width: 130, sort: true,edit: 'text'},
+                {field: "unit1",title: "法定计量单位",width: 150, sort: true,edit: 'text'},
+                {field: "country",title: "原产国",width: 80,edit: 'text'},
+                {field: "hscode",title: "海关商品编码(Hscode)",width: 185, sort: true,edit: 'text'},
+//                {field: "gjcode",title: "国检商品编号",width: 150, sort: true,edit: 'text'},
+                {field: "gtype",title: "商品规格型号",width: 120,edit: 'text'},
+                {field: "price",title: "单价",width: 100, sort: true,edit: 'text'},
+                {field: "total_price",title: "总价",width: 100, sort: true,edit: 'text'},
+                {field: "item_currency",title: "币制",width: 70,edit: 'text'},
+                {field: 'ctrl', title: '操作', width: 100, toolbar: "#tools", fixed: "right"}
+            ]],
+//            skin: "row",
+            even: true,
+            page: true,
+            limits: [5,10,20,40,80],
+            limit: 8,
+            done: function (res,curr,count) {
+                $(".bot-total").children("strong").html(count);
+                if (count == 0) {
+                    $('.tb-wrap:last-child').hide();
+                    if (flag) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+					}
+				}else {
+                    $('.tb-wrap:last-child').show();
+				}
+            }
+        });
+        //监听合法信息操作工具条
+        table.on("tool(osucc)",function (obj) {
+            var data = obj.data;
+            if (obj.event == "commit") {
+                var url = "{:url('admin/Order/preview')}";
+                data = {
+                    logistics_no : data.logistics_no,
+					batch_no : data.batch_no,
+					data: data,
+					req: 'edit'
+				};
+                $.post(url,data,function (res) {
+					if (res.code == "0000" && res.data == undefined) {
+                        layer.msg(res.msg,{time: 2000});
+					}else if(res.code == '0000' && res.data != undefined) {
+                        obj.del();
+                        res.data.error_arr[0].autonum = error_arr.length+1;
+                        error_arr.push(res.data.error_arr[0]);
+                        table.reload('oerr-main');
+                        table.reload('osucc-main');
+                        layer.msg("数据存在错误，已移至数据异常区！",{time: 2000});
+					}else{
+                        layer.open({
+                            content: res.msg
+                        });
+                    }
+                });
+            }else if(obj.event == "del") {
+				layer.confirm('确定删除？', function(index){
+					$.post('{:url("admin/Order/preview")}',{logistics_no: data.logistics_no,batch_no: data.batch_no,gnum: data.gnum,req: 'del'},function (res) {
+						if (res.code == '0000') {
+							obj.del();
+							layer.close(index);
+							table.reload('osucc-main');
+						}else{
+							layer.close(index);
+							layer.msg(res.msg,{time: 2000});
+						}
+					});
+				});
+            }
+        });
+    });
+
+    //提交所有非法信息的更改
+	function emitAll() {
+        var url = "{:url('admin/Order/preview')}";
+        var data = {
+            datas: JSON.stringify(error_arr),
+            req: 'save'
+        };
+        $.post(url,data,function (res) {
+            if (res.code == "0000") {
+                res.data.error_arr == null ? rlength = 0 : rlength = res.data.error_arr.length;
+                if (res.data.error_arr == null | (res.data.error_arr != null&&rlength < error_arr.length)) {
+                    layer.open({
+                        content: "成功更改"+(error_arr.length-rlength)+"条数据！<br><font color='red'>还存在错误数据"+rlength+"条！</font>"
+                    });
+                    error_arr.splice(0,error_arr.length);
+                    error_arr.push.apply(error_arr,res.data.error_arr);
+                    layui.table.reload('osucc-main');
+                    layui.table.reload('oerr-main');
+                }else {
+                    error_arr.splice(0,error_arr.length);
+                    error_arr.push.apply(error_arr,res.data.error_arr);
+                    layui.table.reload('oerr-main');
+                    layui.table.reload('osucc-main');
+                    layer.msg("数据仍存在错误！",{time: 2000});
+                }
+            }else{
+                layer.open({
+                    content: res.msg
+                });
+            }
+        });
+    }
+
+    //批量删除非法信息
+    function delErrBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('oerr-main');
+            var data = checkStatus.data;
+//            var preview_data = $.parseJSON($(parent.document).find('#preview-data').html());
+//            var error_arr = preview_data.error_arr;
+//            var ndata = {batch_no: preview_data.batch_no,error_arr: error_arr};
+            if (data.length>0) {
+                layer.confirm('确定删除？', function(index){
+                    $(data).each(function (i,item) {
+						$(error_arr).each(function (k,d) {
+                            if (item.autonum == d.autonum) {
+                                error_arr.splice(k,1);
+                            }
+                        });
+                    });
+//                    ndata.error_arr = error_arr;
+//                    $(parent.document).find('#preview-data').html(JSON.stringify(ndata));
+                    layer.close(index);
+                    layui.table.reload('oerr-main');
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+
+    //提交所有合法信息
+    function commitAll() {
+        var url = "{:url('admin/Order/importData')}";
+//        var url = "{:url('admin/Order/preview')}".replace('.html','');
+        var data = {data_batch: preview_data.batch_no,clientname: parent.pdata.clientname,note: parent.pdata.note};
+//        layer.open({
+//			type: 2,
+//			content: url+'/req/fill',
+//			title: '导入信息设置',
+//			area: ['500px','300px'],
+//			maxmin: true
+//		});
+        layer.confirm('确定导入？', function(index){
+            $.ajaxSetup({
+                async : false
+            });
+            $.post(url,data,function (res) {
+                if (res.code == "0000") {
+                    $.post("{:url('admin/Order/preview')}",{delbatch: preview_data.batch_no,req: 'del'},function (res) {
+                    });
+                    layer.open({
+                        content: "导入数据成功！",
+                        end: function () {
+                            layui.table.reload('osucc-main');
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: res.msg
+                    });
+                }
+            });
+            layer.close(index);
+        });
+    }
+
+    //批量删除合法信息
+    function delBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('osucc-main');
+            var data = checkStatus.data;
+            if (data.length>0) {
+                //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+                var str = "";
+                $(data).each(function (index,obj) {
+                    str+= obj.logistics_no+'@'+obj.gnum+"|";
+                });
+                layer.confirm('确定删除？', function(index){
+                    $.post('{:url("admin/Order/preview")}',{batch_no: data[0].batch_no,logistics_nos: str.slice(0,-1),req: 'del'},function (res) {
+                        if (res.code == '0000') {
+                            layer.close(index);
+                            layui.table.reload('osucc-main');
+//                            parent.layui.table.reload('ogoods-main');
+                        }else{
+                            layer.close(index);
+                            layer.msg(res.msg,{time: 2000})
+                        }
+                    });
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+</script>
+</body>
+</html>

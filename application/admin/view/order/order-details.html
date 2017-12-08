@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>新增图片</title>
+	<style>
+		.cl {
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		#order-details .panel-heading {
+			height: 40px;
+			padding: 0 15px;
+		}
+		#order-details .panel-heading a {
+			margin-top: 9px;
+		}
+		#order-details .panel-heading span {
+			line-height: 40px;
+		}
+	</style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> <span class="nav-buyer"></span> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div id="order-details" class="panel mt-10">
+		<div class="panel-heading">
+			<span>订单基本信息</span>
+			<a title="修改" onclick="editHead('data')" data="" class="layui-btn layui-btn-mini f-r" lay-event="edit"><i class="Hui-iconfont">&#xe6df;</i></a>
+			<a id="open-tab" hidden data-href="" data-title="" href="javascript:void(0)"></a>
+			<!--<a href="javascript:;" onclick="searchAdv()" class="directive-close"><i class="layui-icon">&#x1006;</i></a>-->
+		</div>
+		<div class="panel-body container-fluid">
+
+		</div>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-30">
+		<span class="l">
+			<a href="javascript:;" class="" style="line-height: 30px;"><i class="layui-icon"></i> 订单商品信息</a>
+			<!--<a class="btn  btn-danger radius ml-10" data-title="批量删除" href="javascript:;"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
+		</span>
+		<span class="r total">共有数据：<strong></strong> 条</span>
+	</div>
+	<div id="og-details" class="datas">
+		<table id="order-goods" lay-filter="ogoods"></table>
+	</div>
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script id="ohead-show" type="text/html">
+	<div class="ohead">
+		<ul class="ohead-ul row">
+			{{# layui.each(d.hlists,function(index,item) { }}
+				<li class="col-xs-4 mb-15">
+					<div class="oh-content">
+						<span>{{ item.field }}：</span>
+						{{# if (item.field === '报关状态') { }}
+							{{# if (item.content === '0') { }}
+								<span style="color: #dd514c">未报关</span>
+							{{# }else{ }}
+								<span style="color: #5EB95E">已报关</span>
+							{{# } }}
+						{{# }else if (item.field === '支付状态') { }}
+							{{# if (item.content === '0') { }}
+								<span style="color: #dd514c">未支付</span>
+							{{# }else{ }}
+								<span style="color: #5EB95E">已支付</span>
+							{{# } }}
+						{{# }else{ }}
+						<span>{{ item.content }}</span>
+						{{# } }}
+					</div>
+				</li>
+			{{# }); }}
+		</ul>
+	</div>
+</script>
+<script type="text/html" id="tools">
+	<a title="修改" class="layui-btn layui-btn-mini" lay-event="edit"><i class="Hui-iconfont">&#xe6df;</i></a>
+	<!--<a title="删除" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6e2;</i></a>-->
+</script>
+<script type="text/javascript">
+    setAlign(['item_name'],'left');
+    layui.config({
+        debug : true,
+        version : true	 //清除缓存
+    });
+    layui.use(['laytpl','jquery','table'],function () {
+		var laytpl = layui.laytpl;
+		var $ = layui.jquery;
+		var table = layui.table;
+		var headtpl = $("#ohead-show").html();
+		var order_no = "{$orderNo}";
+		var result = "";
+		//请求对应订单数据
+        $.ajax({
+			url:"{:url('admin/Order/details')}",
+			data: {"orderNo":order_no},
+            async : false,
+			type: "post",
+			success: function (data) {
+                result = data.data;
+    		}
+		});
+        if (!result.length) {
+            var reg = /(client\/orderlists)|(order\/index)/;
+            if (!(parent.document.querySelector('#iframe_box').lastElementChild.style.display==='none')) {
+                clrefresh(reg,true);
+			}
+            return;
+        }
+        var headdata = result[0]; //取第一条数据的信息，因为头信息都一样
+        $('a[data]').attr('data',headdata.buyer_name);
+        $('.nav-buyer').html(headdata.buyer_name+"_订单详情");
+        var data = {
+            hlists: [
+                {
+                    "field": "订单编号",
+                    "content": headdata.order_no,
+                },
+                {
+                    "field": "物流运单编号",
+                    "content": headdata.logistics_no,
+                },
+                {
+                    "field": "导入时间",
+                    "content": headdata.create_time,
+                },
+                {
+                    "field": "报关状态",
+                    "content": headdata.declare_status,
+                },
+                {
+                    "field": "支付状态",
+                    "content": headdata.pay_status,
+                },
+                {
+                    "field": "电商平台代码",
+                    "content": headdata.ebp_code,
+                },
+                {
+                    "field": "电商平台名称",
+                    "content": headdata.ebp_name,
+                },
+                {
+                    "field": "电商企业代码",
+                    "content": headdata.ebc_code,
+                },
+                {
+                    "field": "电商企业名称",
+                    "content": headdata.ebc_name,
+                },
+                {
+                    "field": "商品价格",
+                    "content": headdata.goods_value,
+                },
+                {
+                    "field": "运杂费",
+                    "content": headdata.freight,
+                },
+                {
+                    "field": "非现金抵扣金额",
+                    "content": headdata.discount,
+                },
+                {
+                    "field": "代扣税款",
+                    "content": headdata.tax_total,
+                },
+                {
+                    "field": "实际支付金额",
+                    "content": headdata.actural_paid,
+                },
+                {
+                    "field": "币制",
+                    "content": headdata.currency,
+                },
+                {
+                    "field": "订购人姓名",
+                    "content": headdata.buyer_name,
+                },
+                {
+                    "field": "订购人电话",
+                    "content": headdata.buyer_telephone,
+                },
+                {
+                    "field": "订购人证件类型",
+                    "content": headdata.buyer_id_type,
+                },
+                {
+                    "field": "订购人证件号码",
+                    "content": headdata.buyer_id_number,
+                },
+                {
+                    "field": "收货人姓名",
+                    "content": headdata.consignee,
+                },
+                {
+                    "field": "收货人电话",
+                    "content": headdata.consignee_telephone,
+                },
+                {
+                    "field": "贸易方式",
+                    "content": headdata.trade_mode,
+                },
+                {
+                    "field": "起运国",
+                    "content": headdata.a_country,
+                },
+                {
+                    "field": "运费",
+                    "content": headdata.freight2,
+                },
+                {
+                    "field": "保费",
+                    "content": headdata.insured_fee,
+                },
+                {
+                    "field": "包装种类",
+                    "content": headdata.wrap_type,
+                },
+                {
+                    "field": "毛重(公斤)",
+                    "content": headdata.gross_weight,
+                },
+                {
+                    "field": "净重(公斤)",
+                    "content": headdata.net_weight,
+                },
+                {
+                    "field": "提单号",
+                    "content": headdata.bill_no,
+                },
+                {
+                    "field": "航班航次号",
+                    "content": headdata.voyage_no,
+                },
+                {
+                    "field": "件数",
+                    "content": headdata.pack_no,
+                },
+                {
+                    "field": "收货地址",
+                    "content": headdata.consignee_address,
+                },
+            ]
+        }
+		laytpl(headtpl).render(data,function (html) {
+			$(".panel-body").append(html);
+        });
+
+		//订单商品信息方法式渲染
+		table.render({
+			elem: "#order-goods",
+			id: "ogoods-main",
+			url: "{:url('admin/Order/details')}",
+//			height: 200,
+			where: {orderNo: order_no},
+			cols: [[
+//                {checkbox: true},
+				{field: "gnum",title: "商品序号", width: 115, sort: true},
+				{field: "item_name",title: "企业商品名称",width: 330},
+				{field: "qty",title: "数量",width: 100, sort: true},
+				{field: "unit",title: "计量单位",width: 120, sort: true},
+				{field: "qty1",title: "法定数量",width: 120, sort: true},
+				{field: "unit1",title: "法定计量单位",width: 140, sort: true},
+				{field: "country",title: "原产国",width: 80},
+				{field: "hscode",title: "海关商品编码(Hscode)",width: 200, sort: true},
+//				{field: "gjcode",title: "国检商品编号",width: 150, sort: true},
+				{field: "gtype",title: "商品规格型号",width: 120},
+				{field: "price",title: "单价",width: 100, sort: true},
+				{field: "total_price",title: "总价",width: 100, sort: true},
+				{field: "currency",title: "币制",width: 70},
+                {field: 'ctrl', title: '操作', width: 70, toolbar: "#tools", fixed: "right"}
+			]],
+            skin: 'row', //表格风格
+			even: true,
+			page: true,
+			limits: [2,5,10],
+			limit: 5,
+			done: function (res,curr,count) {
+                $(".total").children("strong").html(count);
+            }
+		});
+        //监听操作工具条
+        table.on("tool(ogoods)",function (obj) {
+            var data = obj.data;
+            if (obj.event == "edit") {
+                editHead(headdata.buyer_name);
+            }else if(obj.event == "del") {
+
+            }
+        });
+    })
+	function editHead(headdata) {
+        var url = "{:url('admin/Order/edit')}".replace('.html','');
+        $('#open-tab').attr("data-href",url+'/orderNum/'+"{$orderNo}");
+        if (headdata == 'data') {
+            $('#open-tab').attr("data-title",$('a[data]').attr('data')+"_订单修改");
+		}else{
+            $('#open-tab').attr("data-title",headdata+"_订单修改");
+		}
+        Hui_admin_tab($('#open-tab'));
+    }
+</script>
+</body>
+</html>

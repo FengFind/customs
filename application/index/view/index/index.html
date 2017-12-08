@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>layui</title>
+    <link rel="stylesheet" href="__PUBLIC__static/layui/css/layui.css">
+    <script src="__PUBLIC__static/layui/layui.js"></script>
+
+</head>
+<body>
+<div id="show"></div>
+<div id="view"></div>
+<table id="demo">
+    <thead>
+        <th lay-data="{field:'name',width:100}">name</th>
+        <th lay-data="{field:'age',width:100}">age</th>
+    </thead>
+    <tbody>
+    <tr><td>jack</td><td>18</td></tr>
+    <tr><td>tom</td><td>19</td></tr>
+    </tbody>
+</table>
+
+<!--<script id="test" type="text/html">-->
+    <!--<h1>{{ d.title }}</h1>-->
+    <!--<ul>-->
+        <!--{{#  layui.each(d.list,function(index,item){  }}-->
+        <!--<li>name: {{ item.name }}</li>-->
+        <!--<li>age: {{ item.age }}</li>-->
+        <!--{{#  });  }}-->
+        <!--{{#  if(d.list.length == 0){  }}-->
+        <!--<p>无数据</p>-->
+        <!--{{#  }  }}-->
+    <!--</ul>-->
+<!--</script>-->
+
+<script>
+    layui.config({
+        version : "true",
+        debug : "true",
+        "base" : "__PUBLIC__static/js/modules/"
+    })
+    layui.use(['laytpl','table'],function () {
+        var laytpl = layui.laytpl;
+        var table = layui.table;
+        var tpl = test.innerHTML;
+        var show = document.getElementById('show');
+        var data = {
+            'title' : "test",
+            'list' : [{name : "jack",age:"18"},{name : "tom",age:"20"}]
+        }
+//        laytpl(tpl).render(data,function (html) {
+//            show.innerHTML = html;
+//        });
+        table.init('demo', {
+                height: "300"
+            });
+    });
+</script>
+</body>
+</html>

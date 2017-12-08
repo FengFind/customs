@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>添加权限</title>
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-admin-add" method="post">
+	<div class="row cl" id="mod">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>模块：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="admin" placeholder="" id="module" name="module">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" autocomplete="off" value="" placeholder="权限名称" id="title" name="title">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" autocomplete="off"  placeholder="权限" id="name" name="name"><span style="color:#666">例如：Order/index</span>
+		</div>
+	</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">条件：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" autocomplete="off"  placeholder="条件" id="condition" name="condition"><span style="color:#666">例如：{status}==1,条件要是用户表的字段</span>
+			</div>
+		</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限状态：</label>
+		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+			<div class="radio-box">
+				<input name="status" type="radio" id="status-1" checked value="1">
+				<label for="status-1">启用</label>
+			</div>
+			<div class="radio-box">
+				<input type="radio" id="status-2" name="status" value="0">
+				<label for="status-2">禁用</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row cl">
+		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+			<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+		</div>
+	</div>
+	</form>
+</article>
+
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+	var flag = parent.pdata === null ? false : true;	//子权限添加时，值为true
+	var pid = parent.pdata === null ? 0 : parent.pdata.id;
+	if (flag) {
+	    $('#module').attr({readonly: 'readonly',unselectable: 'on'});
+	    $('#module').val(parent.pdata.module);
+	}
+    $.validator.addMethod('checkName',function (value,element) {
+        var length = value.length;
+        var regName = /^\w+\/\w?/;
+        return this.optional(element) || regName.test(value);
+    },'请按照例子格式填写！');
+$(function(){
+	$("#form-admin-add").validate({
+		rules:{
+			module:{
+				required:true,
+			},
+			title:{
+				required:true,
+			},
+			name:{
+				required:true,
+                checkName: true
+			},
+            status:{
+				required:true,
+			}
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				type: 'post',
+				url: "{:url('admin/admin/permissionAdd')}" ,
+				data: {pid: pid},
+				success: function(data){
+				    if (data.code === '0000') {
+                        layer.msg('添加成功!',{time:1000,end: function () {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.$('.btn-refresh').click();
+                            parent.layer.close(index);
+                            parent.layui.table.reload('main');
+                        }});
+                    }else if (typeof data.msg === 'string' && data.msg.indexOf('Duplicate')!==-1){
+				        layer.open ({content:'该权限节点已存在！'});
+                    }else{
+                        console.log(data.msg);
+                        layer.open({content:'未知错误！'})
+                    }
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+				}
+			});
+		}
+	});
+});
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

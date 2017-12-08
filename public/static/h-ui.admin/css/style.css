@@ -1,0 +1,143 @@
+@charset "utf-8";
+/*订单列表 order-list*/
+.panel {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.panel-heading {
+    background: #F5FAFE;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 20px;
+    color: #333;
+    font-size: 16px;
+}
+.search-btns a:active {
+    color: white;
+}
+.panel-body {
+    padding: 10px 20px;
+    height: auto;
+    /*height: 160px;*/
+    overflow-x: scroll;
+}
+.search-ul ul,.ohead-ul {
+    list-style-type: none;
+}
+.search-ul li {
+    display: inline-block;
+    /*text-align: center;*/
+    width: 33%;
+    width: calc(100% / 3 - 6px);
+    -moz-width: calc(100% / 3 - 6px);
+    -webkit-width: calc(100% / 3 - 6px);
+    -o-width: calc(100% / 3 - 6px);
+    margin-bottom: 7px;
+    /*min-width: 336px;*/
+    min-width: 405px;
+}
+
+.search-ul li .tab {
+    width: 25%;
+    text-align: right;
+    padding: 4px 0;
+    background: #F5FAFE;
+    border: 1px solid #ddd;
+    color: #333;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.search-ul li .select-ctrl {
+    display: inline-block;
+    width: 25%;
+}
+.search-ul li .select-ctrl select, .search-ul li .main-select select {
+    height: 31px;
+    vertical-align: middle;
+}
+.search-ul li .main-input {
+width: 47%;
+padding: 0;
+}
+.search-ul li  .Wdate {
+    width: 34.8%;
+}
+.search-ul li .main-select {
+    display: inline-block;
+    width: 47%;
+}
+.search-ul li .main-select select {
+    background: #5A98DE;
+    color: white;
+}
+.panel-heading .directive-close {
+    color: #5A98DE;
+    opacity: .8;
+    float: right;
+    font-weight: bolder;
+    line-height: 22px;
+}
+.total {
+    margin-top: 5px;
+}
+.layui-table th {
+    position: static;
+}
+.datas .layui-table-view .layui-table td {
+    text-align: center;
+}
+.layui-table-view .layui-table th{
+    text-align: center;
+}
+ .datas .layui-table-view .layui-table th,.datas .layui-table-header {
+    background: #f5fafe;
+ }
+ .datas .layui-table-tool {
+     background: #f5fafe;
+ }
+.layui-table-tool:hover {
+    overflow-x: initial;
+}
+
+/*订单详情订单头部分*/
+#order-details .panel-body {
+    height: auto;
+    padding: 15px 20px;
+    padding-bottom: 0;
+}
+.ohead-ul {
+    /*min-width: 1320px;*/
+    /*padding-left: 90px;*/
+    width: 80%;
+    margin: auto;
+}
+.ohead-ul li {
+    min-width: 370px;
+}
+.oh-content {
+    width: 100%;
+    margin: 0 auto;
+}
+.oh-content span:first-child {
+    display: inline-block;
+    width: 35%;
+    text-align: right;
+    vertical-align: top;
+    color: #999;
+}
+.oh-content span:last-child {
+    margin-left: 10px;
+    display: inline-block;
+    width: 60%;
+    line-height: 20px;
+    vertical-align: top;
+    color: #333;
+}
+
+.oh-content span:last-child .textarea {
+    height: 60px;
+}
+
+.a-underline {
+    text-decoration: underline;
+}

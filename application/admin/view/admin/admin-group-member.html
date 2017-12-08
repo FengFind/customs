@@ -1,0 +1,295 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+	{include file='export-head' /}
+<title>会员列表</title>
+	<style>
+		.tb-wrap {
+			border: solid 1px #EEEEEE;
+			border-radius: 5px;
+			padding: 5px;
+		}
+	</style>
+</head>
+<body>
+<nav><a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<span hidden>{$tpl=3}</span>
+	<!--{include file='date-search' /}-->
+	<!--数据显示-->
+	<div class="tb-wrap mt-20">
+		<div class="cl pd-5 bg-1 bk-gray mt-10">
+			<span class="l">
+				<!--<a href="javascript:;" onclick="admin_add('添加用户','{:url(\'add\')}','800')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>-->
+				<span id="memtitle" href="javascript:;" class="" style="color: #47A8FC;line-height: 30px;"><i class="layui-icon"></i> </span>
+
+			</span>
+			<!--<span class="r total mr-10 total-top">共有数据：<strong></strong> 条</span>-->
+			<span class="r">
+				<a class="btn  btn-warning  radius ml-10" data-title="批量移除组成员" onclick="delBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6de;</i> 批量移除成员</a>
+			</span>
+		</div>
+		<div class="datas">
+			<table id="memberLists" lay-filter="mlist"></table>
+		</div>
+	</div>
+
+	<div class="tb-wrap mt-40">
+		<div class="cl pd-5 bg-1 bk-gray mt-10">
+			<span class="l">
+				<!--<a href="javascript:;" onclick="admin_add('添加用户','{:url(\'add\')}','800')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>-->
+				<span id="nomemtitle" href="javascript:;" class="" style="color: #F37B1D;line-height: 30px"><i class="layui-icon"></i> 非用户组成员</span>
+
+			</span>
+			<!--<span class="r total mr-10 total-bottom">共有数据：<strong></strong> 条</span>-->
+			<span class="r">
+				<a class="btn  btn-secondary  radius ml-10" data-title="批量添加组成员" onclick="addMemberBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6dc;</i> 批量移至组成员</a>
+			</span>
+		</div>
+		<div class="datas">
+			<table id="nomemLists" lay-filter="nmlist"></table>
+		</div>
+
+	</div>
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<!--<script type="text/javascript" src="__PUBLIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="__PUBLIC__/lib/laypage/1.2/laypage.js"></script>-->
+<script type="text/html" id="moveout">
+	<a title="移除成员" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6de;</i></a>
+</script>
+<script type="text/html" id="movein">
+	<a title="移至组成员" class="layui-btn layui-btn-mini" lay-event="add" style="background:#5A98DE"><i class="Hui-iconfont">&#xe6dc;</i></a>
+</script>
+<script type="text/html" id="status">
+	{{# if (d.status >= 1) { }}
+		<span>启用</span>
+	{{# }else{ }}
+		<span>禁用</span>
+	{{# } }}
+</script>
+<script type="text/html" id="check-date">
+	{{# if (d.login_time.indexOf('1970-01-01 08:00:00') !== -1) { }}
+	<span>该用户未登录过</span>
+	{{# }else{ }}
+	<span>{{ d.login_time }}</span>
+	{{# } }}
+</script>
+<script type="text/javascript">
+	$('#memtitle').html(parent.pdata.title+'_成员');
+	$('#nomemtitle').html('非'+parent.pdata.title+'_成员');
+    setAlign(['title'],'left');
+    //表格方法式渲染用户组成员
+    layui.use(['table','layer'],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        table.render({
+            elem: '#memberLists' //指定原始表格元素选择器（推荐id选择器）
+            ,id: 'main'
+//        ,height: 288 //容器高度
+        ,where: {gid:parent.pdata.id,type:'mem',req: 'get'}
+        ,url: '{:url(\'admin/admin/groupsMember\')}'
+//        ,initSort: {
+//            field: 'autonum' //排序字段，对应 cols 设定的各字段名
+//            ,type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+//        }
+//		,height: 'full-600'
+            ,cols: [[ //标题栏
+                {checkbox: true}, //默认全选
+                {field: 'id', title: 'ID', width: 80, sort: true}
+                ,{field: 'username', title: '用户名', width: 170}
+                ,{field: 'title', title: '用户组', width: 494}
+                ,{field: 'login_time', title: '最近登录时间', templet: '#check-date',width: 400, sort: true}
+                ,{field: 'status', title: '状态',templet: '#status', width: 200, sort: true}
+                ,{field: 'ctrl', title: '操作', width: 100,fixed:"right", toolbar: "#moveout"}
+            ]]
+            ,skin: 'row' //表格风格
+            ,even: true
+//            ,page: true //是否显示分页
+//            ,limits: [5,10,15,20]
+//            ,limit: 5 //每页默认显示的数量
+            ,done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                $(".total-top").children("strong").html(count);
+            }
+        });
+
+        //监听操作工具条
+        table.on("tool(mlist)",function (obj) {
+            var data = obj.data;
+            if(obj.event == "del") {
+                layer.confirm('确定移除？', function(index){
+                    $.post('{:url("admin/admin/groupsMember")}',{gid: parent.pdata.id,uid: obj.data.id,req: "remove"},function (res) {
+                        if (res.code == '0000') {
+                            obj.del();
+                            layer.close(index);
+                            table.reload('main');
+                            table.reload('nomem');
+                            parent.refleshAdminList();
+                            parent.layui.table.reload('main');
+                        }else{
+                            console.log(res.msg);
+                            layer.close(index);
+                            layer.msg(res.msg,{time: 2000})
+                        }
+                    });
+                });
+            }
+        });
+     });
+
+    //批量移除
+    function delBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('main');
+            var data = checkStatus.data;
+
+            if (data.length>0) {
+                //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+                var str = "";
+                $(data).each(function (index,obj) {
+                    str+= obj.id+"|";
+                });
+                layer.confirm('确定移除？', function(index){
+                    $.post('{:url("admin/admin/groupsMember")}',{data: str.slice(0,-1),gid: parent.pdata.id,req: "remove"},function (res) {
+                        if (res.code == '0000') {
+                            table.reload('main');
+                            table.reload('nomem');
+                            parent.refleshAdminList();
+                            parent.layui.table.reload('main');
+                            layer.close(index);
+                        }else{
+                            layer.close(index);
+                            layer.msg(res.msg,{time: 2000})
+                        }
+                    });
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+
+    //表格方法式渲染非组成员
+    layui.use(['table','layer'],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        table.render({
+            elem: '#nomemLists' //指定原始表格元素选择器（推荐id选择器）
+            ,id: 'nomem'
+//        ,height: 288 //容器高度
+//        ,data: res.data
+            ,url: '{:url(\'admin/admin/groupsMember\')}'
+//        ,initSort: {
+//            field: 'autonum' //排序字段，对应 cols 设定的各字段名
+//            ,type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+//        }
+//		,height: 'full-600'
+            ,where: {gid:parent.pdata.id,type:'nomem',req: 'get'}
+            ,cols: [[ //标题栏
+                {checkbox: true}, //默认全选
+                {field: 'id', title: 'ID', width: 80, sort: true}
+                ,{field: 'username', title: '用户名', width: 170}
+                ,{field: 'title', title: '用户组', width: 494}
+                ,{field: 'login_time', title: '最近登录时间', templet: '#check-date',width: 400, sort: true}
+                ,{field: 'status', title: '状态',templet: '#status', width: 200, sort: true}
+                ,{field: 'ctrl', title: '操作', width: 100,fixed:"right", toolbar: "#movein"}
+            ]]
+            ,skin: 'row' //表格风格
+            ,even: true
+//            ,page: true //是否显示分页
+//            ,limits: [5,10,15,20]
+//            ,limit: 5 //每页默认显示的数量
+            ,done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                $(".total-bottom").children("strong").html(count);
+            }
+        });
+
+        //监听操作工具条
+        table.on("tool(nmlist)",function (obj) {
+            var data = obj.data;
+            if(obj.event == "add") {
+                layer.confirm('确定移至组？', function(index){
+                    $.post('{:url("admin/admin/groupsMember")}',{uid: data.id,gid: parent.pdata.id,req: "add"},function (res) {
+                        if (res.code == '0000') {
+                            obj.del();
+                            layer.close(index);
+                            table.reload('main');
+                            table.reload('nomem');
+                            parent.refleshAdminList();
+                            parent.layui.table.reload('main');
+                        }else{
+                            console.log(res.msg);
+                            layer.close(index);
+                            layer.msg(res.msg,{time: 2000})
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+    //批量添加用户
+    function addMemberBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('nomem');
+            var data = checkStatus.data;
+
+            if (data.length>0) {
+                //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+                var str = "";
+                $(data).each(function (index,obj) {
+                    str+= obj.id+"|";
+                });
+                layer.confirm('确定移至组？', function(index){
+                    $.post('{:url("admin/admin/groupsMember")}',{data: str.slice(0,-1),gid: parent.pdata.id,req: "add"},function (res) {
+                        if (res.code == '0000') {
+                            table.reload('main');
+                            table.reload('nomem');
+                            parent.refleshAdminList();
+                            parent.layui.table.reload('main');
+                            layer.close(index);
+                        }else{
+                            layer.close(index);
+                            layer.msg(res.msg,{time: 2000})
+                        }
+                    });
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+
+	//用户搜索
+    function searchUser() {
+        layui.table.reload('main', {
+            url: "{:url('admin/admin/search')}",
+            method: 'post'
+            ,where: {data:$('#searchUsers').serializeArray(),type: 'user_multiple'}
+        });
+        $('#searchUsers').submit(function (e) {
+			return false;
+        });
+    }
+
+</script>
+</body>
+</html>

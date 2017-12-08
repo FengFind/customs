@@ -1,0 +1,529 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>客户订单列表</title>
+	<style>
+		body .preview-class .layui-layer-title{    background: rgba(51,159,252,.9); color:#fff; border: none;border-radius: 10px 10px 0 0;}
+		body .preview-class .layui-layer-btn{border-top:1px solid #E9E7E7}
+		body .preview-class .layui-layer-btn a{background:#333;}
+		body .preview-class .layui-layer-btn .layui-layer-btn1{background:#999;}
+		body .preview-class.layer-anim {border-radius: 10px 10px 0 0}
+		.page-container {
+			padding-top: 10px;
+		}
+		.og-tip {
+			color: #DD514C;
+			line-height: 30px;
+		}
+	</style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 客户管理 <span class="c-gray en">&gt;</span> {$clientname}_{$batch}_订单列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<!--查询-->
+	<div class="hidden search text-c">
+		<input type="text" name="order_no" id="order_search" placeholder=" 订单编号" style="width:250px" class="input-text">
+		<button name="" id="" class="btn btn-success" onclick="searchFun(false)" type="submit"><i class="Hui-iconfont">&#xe665;</i> 订单编号</button>
+	</div>
+	<form hidden id="search-form" action="" method="post">
+		<div class="panel mt-20">
+			<div class="panel-heading">
+				<span>查询条件</span>
+				<a href="javascript:;" onclick="searchAdv()" class="directive-close"><i class="layui-icon">&#x1006;</i></a>
+				<span class="search-btns r mr-15">
+					<a class="layui-btn layui-btn-normal layui-btn-mini" title="确认查询" href="javascript:void(0)" onclick="searchFun(true)"><i class="Hui-iconfont">&#xe665;</i></a>
+					<a class="layui-btn layui-btn-danger layui-btn-mini" title="重置" href="javascript:document.getElementById('search-form').reset()"><i class="Hui-iconfont">&#xe66b;</i></a>
+				</span>
+			</div>
+			<div class="panel-body">
+				<div class="search-adv">
+					<ul class="search-ul">
+						<li>
+							<button class="btn btn-primary tab">订单编号：</button>
+							<span class="select-ctrl">
+							<select name="order_no_eq" class="select">
+								<option value="0">等于</option>
+								<option value="1">大于</option>
+								<option value="2">小于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="order_no" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">导入时间的范围：</button>
+							{literal}
+							<input type="text" name="create_time_begin" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })" id="logmin" class="input-text Wdate">
+							-
+							<input type="text" name="create_time_end" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })" id="logmax" class="input-text Wdate">
+							{/literal}
+						</li>
+						<li>
+							<button class="btn btn-primary tab">报关类型：</button>
+							<span class="select-ctrl">
+							<select name="declare_status_eq" class="select">
+								<option value="0">等于</option>
+							</select>
+						</span>
+							<span class="main-select">
+							<select name="declare_status" class="select">
+								<option value="">全部</option>
+								<option value="0">未报关</option>
+								<option value="1">已报关</option>
+							</select>
+						</span>
+						</li>
+						<li>
+							<button class="btn btn-primary tab">批次号：</button>
+							<span class="select-ctrl">
+							<select name="batch_time_eq" class="select">
+								<option value="0">等于</option>
+								<option value="1">大于</option>
+								<option value="2">小于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input style="width: 30%" type="text" name="batch_time" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">批次备注：</button>
+							<span class="select-ctrl">
+							<select name="batch_note_eq" class="select">
+								<option value="0">等于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="batch_note" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">订购人姓名：</button>
+							<span class="select-ctrl">
+							<select name="buyer_name_eq" class="select">
+								<option value="0">等于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="buyer_name" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">提单号：</button>
+							<span class="select-ctrl">
+							<select name="bill_no_eq" class="select">
+								<option value="0">等于</option>
+								<option value="1">大于</option>
+								<option value="2">小于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="bill_no" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">物流运单编号：</button>
+							<span class="select-ctrl">
+							<select name="logistics_no_eq" class="select">
+								<option value="0">等于</option>
+								<option value="1">大于</option>
+								<option value="2">小于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="logistics_no" class="input-text main-input">
+						</li>
+						<li>
+							<button class="btn btn-primary tab">收货人姓名：</button>
+							<span class="select-ctrl">
+							<select name="consignee_eq" class="select">
+								<option value="0">等于</option>
+								<option value="3">不等于</option>
+								<option value="4">含有（模糊）</option>
+							</select>
+						</span>
+							<input type="text" name="consignee" class="input-text main-input">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</form>
+	<!--数据显示-->
+	<div class="cl pd-5 bg-1 bk-gray mt-20 text-c">
+		<span class="r">
+			<a href="javascript:;" onclick="searchAdv()" class="btn btn-primary radius"><i class="layui-icon">&#xe615;</i> 高级查询</a>
+			<a class="btn  btn-danger radius" data-title="批量删除" onclick="delBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+			<!--<a id="upload_excel" class="btn  btn-success radius" data-title="导入Excel文件" href="javascript:;"><i class="Hui-iconfont">&#xe642;</i> 导入订单</a>-->
+			<span id="filetips" hidden style="padding: 0 10px;color: #999;vertical-align: middle"></span>
+			<!--<a id="upcommit" class="btn  btn-secondary radius" onclick="uploading(this)" data-title="开始导入" href="javascript:;"><i class="Hui-iconfont">&#xe645;</i> 开始导入</a>-->
+			<a id="open-tab" hidden data-href="" data-title="" href="javascript:void(0)"></a>
+		</span>
+		<!--<span class="l total mr-10">共有数据：<strong></strong> 条</span>-->
+		<span class="l total">{$clientname}_{$batch}_订单信息列表</span>
+		<span class="og-tip">当格子内容显示不全时,您可以点击该格内容来得到完整显示!</span>
+	</div>
+	<div class="datas">
+		<table id="orderLists" lay-filter="olist"></table>
+	</div>
+	<form hidden id="postData" action="{:url('admin/Order/exportData')}" method="post">
+		<input type="text" name="ex_info">
+	</form>
+	<span hidden id="preview-data"></span>
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<!--<script type="text/javascript" src="__PUBLIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="__PUBLIC__/lib/laypage/1.2/laypage.js"></script>-->
+<script type="text/html" id="tools">
+	<a title="详情" class="layui-btn layui-btn-normal layui-btn-mini" lay-event="details"><i class="Hui-iconfont">&#xe627;</i></a>
+	<a title="修改" class="layui-btn layui-btn-mini" lay-event="edit"><i class="Hui-iconfont">&#xe6df;</i></a>
+	<a title="删除" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6e2;</i></a>
+</script>
+<script type="text/html" id="dstatus">
+	{{# if (d.declare_status === '0') { }}
+	<span title="未报关" style="color: #dd514c"><i class="Hui-iconfont">&#xe6dd;</i></span>
+	{{# } else { }}
+	<span title="已报关" style="color: #5EB95E"><i class="Hui-iconfont">&#xe6e1;</i></span>
+	{{# } }}
+</script>
+<script type="text/html" id="pstatus">
+	{{# if (d.pay_status === '0') { }}
+	<!--<span title="未支付" style="color: #dd514c"><i class="Hui-iconfont">&#xe6dd;</i></span>-->
+	<a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="pay">支付</a>
+	{{# } else { }}
+	<span title="已支付" style="color: #5EB95E">已支付</span>
+	{{# } }}
+</script>
+<script type="text/html" id="address">
+	<div title="{{d.consignee_address}}">{{d.consignee_address}}</div>
+	<!--<div class="layui-table-cell laytable-cell-1-consignee_address" title="{{d.consignee_address}}">{{d.consignee_address}}</div>-->
+</script>
+<script type="text/html" id="order">
+	<a title="点击查看该订单详情" class="a-underline" href="javascript:void(0)" lay-event="details">{{ d.order_no }}</a>
+</script>
+<script type="text/javascript">
+	$('#search-form button').click(function () {
+		return false;
+    });
+    layui.config({
+        debug : true,
+        version : true	 //清除缓存
+    });
+    //$.ajax({
+    //    url: "{:url(\'order/getDatas\')}",
+    //    success: function (res) {
+    //        //执行渲染
+    //
+    //    },
+    //    error: function () {
+    //        layer.open({
+    //            msg: "出错啦，快找管理猿！"
+    //        });
+    //    }
+    //});
+	var currpage = "";
+    //表格方法式渲染
+    layui.use(['table','layer','upload'],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var upload = layui.upload;
+        table.render({
+            elem: '#orderLists' //指定原始表格元素选择器（推荐id选择器）
+            ,id: 'main'
+//            ,height: 288 //容器高度
+//        ,data: res.data
+            ,url: "{:url(\'client/orderLists\')}"
+			,where: {transbatch: '{$batch}'}
+//        ,initSort: {
+//            field: 'autonum' //排序字段，对应 cols 设定的各字段名
+//            ,type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+//        }
+//		,height: 'full-600'
+            ,cols: [[ //标题栏
+                {checkbox: true} //默认全选
+                ,{field: 'autonum', title: 'No.',width: 80, sort: true}
+                ,{field: 'order_no', title: '订单编号', templet: '#order', width: 170, sort: true}
+                ,{field: 'batch_time', title: '批次号', width: 180, sort: true}
+                ,{field: 'bill_no', title: '提单号', width: 160, sort: true}
+                ,{field: 'logistics_no', title: '物流运单编号', width: 150, sort: true}
+                ,{field: 'create_time', title: '导入时间', width: 170, sort: true}
+//                ,{field: 'buyer_regno', title: '订购人注册号', width: 90, edit: "text"}
+                ,{field: 'buyer_name', title: '订购人姓名', width: 100}
+                ,{field: 'buyer_telephone', title: '订购人电话', width: 130}
+                ,{field: 'buyer_id_type', title: '订购人证件类型', width: 130}
+                ,{field: 'buyer_id_number', title: '订购人证件号码', width: 180}
+                ,{field: 'goods_value', title: '商品价格', width: 120, sort: true}
+                ,{field: 'freight', title: '运杂费', width: 120, sort: true}
+                ,{field: 'discount', title: '非现金抵扣金额', width: 155, sort: true}
+                ,{field: 'tax_total', title: '代扣税款', width: 120, sort: true}
+                ,{field: 'actural_paid', title: '实际支付金额', width: 140, sort: true}
+                ,{field: 'currency', title: '币制', width: 100}
+                ,{field: 'consignee', title: '收货人姓名', width: 100}
+                ,{field: 'consignee_telephone', title: '收货人电话', width: 130}
+                ,{field: 'consignee_address', title: '收货地址', templet: '#address', width: 400}
+                ,{field: 'trade_mode', title: '贸易方式', width: 120, sort: true}
+//                ,{field: 'books_no', title: '账册编号', width: 120, sort: true}
+//                ,{field: 'license_no', title: '许可证件号', width: 120, sort: true}
+                ,{field: 'a_country', title: '起运国', width: 100, sort: true}
+                ,{field: 'freight2', title: '运费', width: 100, sort: true}
+                ,{field: 'insured_fee', title: '保费', width: 100, sort: true}
+                ,{field: 'wrap_type', title: '包装种类', width: 120, sort: true}
+                ,{field: 'gross_weight', title: '毛重(公斤)', width: 130, sort: true}
+                ,{field: 'net_weight', title: '净重(公斤)', width: 130, sort: true}
+                ,{field: 'voyage_no', title: '航班航次号', width: 130, sort: true}
+                ,{field: 'pack_no', title: '件数', width: 100, sort: true}
+                ,{field: 'batch_note', title: '批次备注', width: 180}
+//                ,{field: 'declare_status', title: '报关状态',templet: '#dstatus',fixed: "right", width: 100}
+                ,{field: 'pay_status', title: '支付',templet: '#pstatus',fixed: "right", width: 75}
+                ,{field: 'ctrl', title: '操作', width: 135, toolbar: "#tools", fixed: "right"}
+            ]]
+            ,skin: 'row' //表格风格
+            ,even: true
+            ,page: true //是否显示分页
+            ,limits: [5,10,15,20]
+            ,limit: 10 //每页默认显示的数量
+            ,done: function(res, curr, count){
+                currpage = curr;
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                $(".total").children("strong").html(count);
+            }
+        });
+        //excel上传
+        var uploadInst = upload.render({
+            elem: '#upload_excel' //绑定元素
+            ,url: "{:url('admin/Order/importData')}" //上传接口
+            ,accept: "file"
+            ,exts: "xls|xlsx"
+            ,field: "excelFile"
+            ,auto: false
+            ,multiple: false
+            ,bindAction: "#upcommit"
+            ,choose: function (obj) {
+                obj.preview(function(index, file, result){
+                    $("#filetips").html(file.name);
+                    $("#filetips").show();
+                });
+                $.post("{:url('admin/Order/preview')}",{remove: true,req: 'del'},function (res) {});
+                $("#upcommit").click();
+            }
+            , done: function (res) {
+                //上传完毕回调
+                layer.closeAll('loading');
+                $("#filetips").hide();
+                $("#upcommit").hide();
+                if (res.code == 0000) {
+                    $('#preview-data').html(JSON.stringify(res.data));
+                    layer.open({
+                        type: 2,
+                        content: "{:url('admin/Order/preview')}",
+                        title: '上传数据预览',
+                        skin: 'preview-class',
+                        area: ['98%','98%'],
+                        maxmin: true,
+                        shade: 0,
+                        end: function(){
+                            table.reload('main');
+                            $.post("{:url('admin/Order/preview')}",{delbatch: res.data.batch_no,req: 'del'},function (res) {});
+                            $.post("{:url('admin/Order/clearUploads')}",function (res) {});
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: "导入数据失败，可能是工作表不合法，请更换表后重试，仍然失败请找管理猿！"
+                    });
+                    console.log(res.error);
+                }
+            }
+            , error: function (res) {
+                //请求异常回调
+                layer.closeAll('loading');
+                $("#filetips").hide();
+                $("#upcommit").hide();
+                layer.open({
+                    content: "上传失败！可能是您没有权限！"
+                });
+            }
+        });
+
+//同步服务端排序
+//    table.on('sort(olist)', function(obj){ //注：tool是工具条事件名，autonum是table原始容器的属性 lay-filter="对应的值"
+////        console.log(obj.field); //当前排序的字段名
+////        console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+////        console.log($(this)); //当前排序的 th 对象
+//
+//        //尽管我们的 table 自带排序功能，但并没有请求服务端。
+//        //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，如：
+//        table.reload('main', {
+//            initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+//            ,where: { //请求参数
+//                field: obj.field //排序字段
+//                ,order: obj.type //排序方式
+//            }
+//        });
+//    });
+
+        //监听操作工具条
+        table.on("tool(olist)",function (obj) {
+            var data = obj.data;
+            var detailUrl = "{:url('admin/Order/details')}".replace(".html","");
+            var editUrl = "{:url('admin/Order/edit')}".replace(".html","");
+            if (obj.event === "details") {
+                $('#open-tab').attr("data-href",detailUrl+'/orderNum/'+data.order_no);
+                $('#open-tab').attr("data-title",data.buyer_name+"_订单详情");
+                Hui_admin_tab($('#open-tab'));
+            }else if(obj.event === "edit") {
+                $('#open-tab').attr("data-href",editUrl+'/orderNum/'+data.order_no);
+                $('#open-tab').attr("data-title",data.buyer_name+"_订单修改");
+                Hui_admin_tab($('#open-tab'));
+            }else if(obj.event === "del") {
+                layer.confirm('确定删除？', function(index){
+                    $.post('{:url("admin/Order/delOrder")}',{order_no: data.order_no},function (res) {
+                        if (res.code == '0000') {
+                            obj.del();
+                            layer.close(index);
+                            $('.layui-laypage-count').html('共 '+($('.layui-laypage-count').html().match(/\d+/)-1)+' 条');
+						}else{
+                            layer.close(index);
+                            if (typeof res !== 'string') {
+                                layer.msg(res.msg,{time: 2000});
+							}else{
+                                layer.msg(res,{time: 2000});
+							}
+						}
+                    });
+                });
+            }else if(obj.event === 'pay') {
+                layer.confirm('确定支付？',function (index) {
+					$.post('{:url("admin/Order/pay")}',{order_no: data.order_no},function (res) {
+                        if (res.code == '0000') {
+                            obj.update({pay_status: 1});
+                            layer.msg(res.msg,{time: 2000});
+                            layer.close(index);
+                        }else{
+                            layer.close(index);
+                            if (typeof res !== 'string') {
+                                layer.open({content: res.msg});
+                            }else{
+                                //无权限时的提示
+                                layer.open({content: res});
+                            }
+                        }
+                    });
+                });
+			}
+        });
+    });
+
+    $(document).ready(function () {
+        $("#upcommit").hide();
+        setAlign(['consignee_address','batch_note'],'left');
+//        $.get('{:url("admin/order/getLastBatchs")}',function (res) {
+		var res = {data: [{batch_time: '{$batch}'}]};
+            var html = '<select  id="batch-select" style="width: 17%;height: 31px;vertical-align: middle;" class="select"><option value="0">&nbsp; 最近十条</option>';
+            if (res.data.length>0) {
+                $(res.data).each(function (index,item) {
+                    html+= '<option value='+(index+1)+'>'+item.batch_time+'</option>';
+                });
+                html+= '</select>';
+            }else {
+                html+= '</select>';
+            }
+            $('input[name="batch_time"]').parent()[0].insertAdjacentHTML('beforeEnd',html);
+            $('#batch-select').change(function () {
+                if ($(this).val()!=='0') {
+                    $(this).css('width','4%');
+                    $('input[name="batch_time"]').css('width','43%')
+                    $('input[name="batch_time"]').val($(this).find("option:selected").text());
+                }else{
+                    $('input[name="batch_time"]').val("");
+                }
+            });
+//        });
+    });
+
+    //批量删除
+    function delBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('main');
+            var data = checkStatus.data;
+
+            if (data.length>0) {
+                //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+				var str = "";
+                $(data).each(function (index,obj) {
+                    str+= obj.order_no+"|";
+                });
+                layer.confirm('确定删除？', function(index){
+                    $.post('{:url("admin/Order/delOrder")}',{data: str.slice(0,-1)},function (res) {
+                        if (res.code == '0000') {
+                            table.reload('main');
+                            layer.close(index);
+                        }else{
+                            layer.close(index);
+                            if (typeof res !== 'string') {
+                                layer.msg(res.msg,{time: 2000});
+                            }else{
+                                layer.msg(res,{time: 2000});
+                            }
+                        }
+                    });
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+
+    //搜索处理函数
+    function searchFun(type) {
+        if (type) {
+            layui.table.reload('main', {
+                url: "{:url('admin/Search/searchByMultiple')}",
+				method: 'post'
+                ,where: {data:$('#search-form').serializeArray(),type: 'olist_multiple',extra: {'b.batch_time': '{$batch}'}}
+            });
+			$('#search-form').submit(function (e) {
+                return false;
+            });
+        }else{
+            if (hasString($("#order_search"))>0) {
+                layui.table.reload('main', {
+                    url: "{:url('admin/Search/searchBySingle')}",
+                    method: 'get'
+                    ,where: {condition: $("#order_search").val(),type: 'olist_single'}
+                });
+            }else{
+                layui.layer.msg("请输入正确的数据！",{time:1000});
+            }
+        }
+    }
+
+    //上传请求时的动画
+    function uploading() {
+        layer.load(0,{shade:0.3}); //换了种风格
+    }
+
+    //显示高级查询
+    function searchAdv() {
+//        $(".search").toggle("500");
+        $("#search-form").toggle("1000");
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+	{include file='export-head' /}
+<title>管理员列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<span hidden>{$tpl=3}</span>
+	{include file='date-search' /}
+	<!--数据显示-->
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="r">
+			<a href="javascript:;" onclick="admin_add('添加用户','{:url(\'add\')}','800','400')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>
+			<a class="btn  btn-danger radius" data-title="批量删除" onclick="delBatch()" href="javascript:;"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+		</span>
+		<!--<span class="l total mr-10">共有数据：<strong></strong> 条</span>-->
+		<span class="l total mr-10">管理员列表</span>
+	</div>
+	<div class="datas">
+		<table id="adminLists" lay-filter="alist"></table>
+	</div>
+</div>
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<!--<script type="text/javascript" src="__PUBLIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="__PUBLIC__/lib/laypage/1.2/laypage.js"></script>-->
+<script type="text/html" id="exportTools">
+	<a title="修改" class="layui-btn layui-btn-mini" lay-event="edit"><i class="Hui-iconfont">&#xe6df;</i></a>
+	<a title="删除" class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del"><i class="Hui-iconfont">&#xe6e2;</i></a>
+</script>
+<script type="text/html" id="status">
+	{{# if (d.status >= 1) { }}
+		<span>启用</span>
+	{{# }else{ }}
+		<span>禁用</span>
+	{{# } }}
+</script>
+<script type="text/html" id="check-date">
+	{{# if (d.login_time.indexOf('1970-01-01 08:00:00') !== -1) { }}
+	<span>该用户未登录过</span>
+	{{# }else{ }}
+	<span>{{ d.login_time }}</span>
+	{{# } }}
+</script>
+<script type="text/javascript">
+	setAlign(['title'],'left');
+	var pdata = null;
+    //表格方法式渲染
+    layui.use(['table','layer'],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        table.render({
+            elem: '#adminLists' //指定原始表格元素选择器（推荐id选择器）
+            ,id: 'main'
+//        ,height: 288 //容器高度
+//        ,data: res.data
+            ,url: '{:url(\'admin/admin/index\')}'
+//        ,initSort: {
+//            field: 'autonum' //排序字段，对应 cols 设定的各字段名
+//            ,type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+//        }
+//		,height: 'full-600'
+            ,cols: [[ //标题栏
+//                {checkbox: true}, //默认全选
+                {checkbox: true}, //默认全选
+                {field: 'id', title: 'ID', width: 80, sort: true}
+                ,{field: 'username', title: '用户名', width: 230}
+                ,{field: 'title', title: '用户组', width: 500}
+                ,{field: 'login_time', title: '最近登录时间', templet: '#check-date',width: 465, sort: true}
+                ,{field: 'status', title: '状态',templet: '#status', width: 230, sort: true}
+                ,{field: 'ctrl', title: '操作', width: 120,fixed:"right", toolbar: "#exportTools"}
+            ]]
+            ,skin: 'row' //表格风格
+            ,even: true
+            ,page: true //是否显示分页
+            ,limits: [5,10,15,20]
+            ,limit: 10 //每页默认显示的数量
+            ,done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+//				pdata = res.data;
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                $(".total").children("strong").html(count);
+            }
+        });
+
+        //监听操作工具条
+        table.on("tool(alist)",function (obj) {
+            pdata = obj.data;
+            var data = obj.data;
+            var url = "{:url('admin/admin/edit')}".replace('.html','');
+            if(obj.event == "edit") {
+				layer.open({
+					type: 2,
+					content: "{:url('admin/admin/edit')}",
+					title: data.username+'_用户修改页面',
+                    maxmin: true,
+					area: ['300px','380px'],
+					end: function () {
+                        refleshGroupsList();
+                    }
+				});
+            }else if(obj.event == "del") {
+                if (data.status ===9) {
+                    layer.open({content:'不能删除超级管理员！！！'});
+                    return;
+                }
+                layer.confirm('确定删除？', function(index){
+                    $.post('{:url("admin/admin/delUsers")}',{id: data.id},function (res) {
+                        if (res.code == '0000') {
+                            obj.del();
+                            layer.close(index);
+                            table.reload('main');
+                            refleshGroupsList();
+                        }else{
+                            layer.close(index);
+                            if (typeof res !== 'string') {
+                                layer.msg(res.msg,{time: 2000});
+                            }else{
+                                layer.msg(res,{time: 2000});
+                            }
+                        }
+                    });
+                });
+            }
+        });
+     });
+
+    //批量删除
+    function delBatch() {
+        layui.use(['table','layer'],function (table,layer) {
+            var $ = layui.jquery;
+            var checkStatus = table.checkStatus('main');
+            var data = checkStatus.data;
+
+            if (data.length>0) {
+                //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
+                var str = "";
+                var flag = true;
+                $(data).each(function (index,obj) {
+                    if (obj.status ===9) {
+                        layer.open({content:'选项中含有超级管理员，不能进行删除操作！！！'});
+                        flag = false;
+                    }
+                    str+= obj.id+"|";
+                });
+                if (!flag) {return};
+                layer.confirm('确定删除？', function(index){
+                    $.post('{:url("admin/admin/delUsers")}',{data: str.slice(0,-1)},function (res) {
+                        if (res.code == '0000') {
+                            table.reload('main');
+                            refleshGroupsList();
+                            layer.close(index);
+                        }else{
+                            layer.close(index);
+                            if (typeof res !== 'string') {
+                                layer.msg(res.msg,{time: 2000});
+                            }else{
+                                layer.msg(res,{time: 2000});
+                            }
+                        }
+                    });
+                });
+            }else{
+                layer.msg("没选择数据呀",{'time':"1000"});
+            }
+        });
+    }
+
+	//用户搜索
+    function searchUser() {
+        layui.table.reload('main', {
+            url: "{:url('admin/admin/search')}",
+            method: 'post'
+            ,where: {data:$('#searchUsers').serializeArray(),type: 'user_multiple'}
+        });
+        $('#searchUsers').submit(function (e) {
+			return false;
+        });
+    }
+
+	/*管理员-增加*/
+    function admin_add(title,url,w,h){
+        layer_show(title,url,w,h);
+    }
+
+    //刷新用户组列表
+    function refleshGroupsList() {
+        var topWindow = $(window.parent.document),
+            iframe = topWindow.find('#iframe_box .show_iframe'),
+            reg = /\/admin\/admin\/groups/;
+        $(iframe).each(function (i,item) {
+            if (reg.test($(item).html())) {
+                var riframe = iframe.eq(i).find('iframe');
+//							console.log($(item).html());
+                riframe[0].contentWindow.layui.table.reload('main');
+            }
+        });
+    }
+</script>
+</body>
+</html>

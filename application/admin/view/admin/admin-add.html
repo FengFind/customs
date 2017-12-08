@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+	{include file='export-head' /}
+<title>添加用户</title>
+	<style>
+		.auth-group label[for^="checkbox-"] {
+			line-height: 25px;
+		}
+	</style>
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-admin-add" method="post">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="adminName" name="username">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" name="password2">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户状态：</label>
+		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+			<div class="radio-box">
+				<input name="status" type="radio" id="status-1" checked value="1">
+				<label for="status-1">启用</label>
+			</div>
+			<div class="radio-box">
+				<input type="radio" id="status-2" name="status" value="0">
+				<label for="status-2">禁用</label>
+			</div>
+		</div>
+	</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">用户组：</label>
+			<div class="formControls col-xs-8 col-sm-9 skin-minimal auth-group">
+				<!--<div class="check-box mb-10">-->
+					<!--<input type="checkbox" id="checkbox-1">-->
+					<!--<label for="checkbox-1">复选框</label>-->
+				<!--</div>-->
+			</div>
+		</div>
+	<!--<div class="row cl">-->
+		<!--<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>-->
+		<!--<div class="formControls col-xs-8 col-sm-9">-->
+			<!--<input type="text" class="input-text" value="" placeholder="" id="phone" name="phone">-->
+		<!--</div>-->
+	<!--</div>-->
+	<!--<div class="row cl">-->
+		<!--<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>-->
+		<!--<div class="formControls col-xs-8 col-sm-9">-->
+			<!--<input type="text" class="input-text" placeholder="@" name="email" id="email">-->
+		<!--</div>-->
+	<!--</div>-->
+	<!--<div class="row cl">-->
+		<!--<label class="form-label col-xs-4 col-sm-3">角色：</label>-->
+		<!--<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">-->
+			<!--<select class="select" name="adminRole" size="1">-->
+				<!--<option value="0">超级管理员</option>-->
+				<!--<option value="1">总编</option>-->
+				<!--<option value="2">栏目主辑</option>-->
+				<!--<option value="3">栏目编辑</option>-->
+			<!--</select>-->
+			<!--</span> </div>-->
+	<!--</div>-->
+	<!--<div class="row cl">-->
+		<!--<label class="form-label col-xs-4 col-sm-3">备注：</label>-->
+		<!--<div class="formControls col-xs-8 col-sm-9">-->
+			<!--<textarea name="" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="$.Huitextarealength(this,100)"></textarea>-->
+			<!--<p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>-->
+		<!--</div>-->
+	<!--</div>-->
+	<div class="row cl">
+		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+			<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+		</div>
+	</div>
+	</form>
+</article>
+
+{include file='export-footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/html" id="auth-group">
+	{{# layui.each(d,function(index,item){ }}
+	{{# if (d.length!==0) { }}
+		<div class="check-box mb-10">
+			<input type="checkbox" id="checkbox-{{index+1}}" name="gid[]" value="{{item.id}}">
+			<label for="checkbox-{{index+1}}">{{ item.title }}</label>
+		</div>
+	{{# }else{ }}
+		<span>暂无分组</span>
+	{{# } }}
+	{{# }); }}
+</script>
+<script type="text/javascript">
+	var result = {};
+	$.ajax({
+        url: "{:url('admin/admin/getAuthGroup')}",
+        type: 'post',
+        data: {},
+        async: false,
+        success: function(data) {
+            result = data.data;
+        }
+    });
+
+$(function(){
+    layui.use(['laytpl','jquery'],function(){
+        var laytpl = layui.laytpl;
+        var $ = layui.jquery;
+        var cbtpl = $('#auth-group').html();
+        laytpl(cbtpl).render(result,function(html) {
+            $('.auth-group').html(html);
+        });
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+    });
+	$("#form-admin-add").validate({
+		rules:{
+			adminName:{
+				required:true,
+				minlength:4,
+				maxlength:16
+			},
+			password:{
+				required:true,
+			},
+			password2:{
+				required:true,
+				equalTo: "#password"
+			},
+            status:{
+				required:true,
+			},
+			adminRole:{
+				required:true,
+			}
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				type: 'post',
+				url: "{:url('admin/admin/add')}" ,
+				success: function(data){
+				    if (data.code === '0000') {
+                        layer.msg('添加成功!',{time:1000});
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.$('.btn-refresh').click();
+                        parent.layer.close(index);
+                        parent.layui.table.reload('main');
+                        parent.refleshGroupsList();
+                    }else if (typeof data.msg === 'string' && data.msg.indexOf('Duplicate')!==-1){
+				        layer.open ({content:'用户已存在！'});
+                    }else{
+                        console.log(data.msg);
+                        layer.open({content:'未知错误！'})
+                    }
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+				}
+			});
+		}
+	});
+});
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
