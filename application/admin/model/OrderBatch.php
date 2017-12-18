@@ -445,7 +445,7 @@ class OrderBatch extends Model
             }
         }else if($batch !== null && $filename !== null) {
             $filename = Excel.$batch.DIRECTORY_SEPARATOR.iconv("utf-8", "gb2312", $filename).'.xls';
-            $d_filename = str_replace('.xls',"_$batch.xls",basename($filename));
+            $d_filename = str_replace('.xls',"_$batch.xls",basename(iconv("gbk", "utf-8", $filename)));
         }else if ($batch === null && $filename !== null) {
             $Nfexcel = new Nfexcel();
             $Nfexcel->dowloadZip($batch);

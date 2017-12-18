@@ -118,6 +118,7 @@
                             obj.del();
                             layer.close(index);
                             table.reload('main');
+                            refleshDelList();
                         }else{
                             layer.close(index);
                             if (typeof res !== 'string') {
@@ -149,6 +150,7 @@
                     $.post('{:url("admin/client/delClients")}',{data: str.slice(0,-1)},function (res) {
                         if (res.code == '0000') {
                             table.reload('main');
+                            refleshDelList();
                             layer.close(index);
                         }else{
                             layer.close(index);
@@ -183,11 +185,11 @@
         layer_show(title,url,w,h);
     }
 
-    //刷新用户组列表
-    function refleshGroupsList() {
+    //刷新删除的客户列表
+    function refleshDelList() {
         var topWindow = $(window.parent.document),
             iframe = topWindow.find('#iframe_box .show_iframe'),
-            reg = /\/admin\/admin\/groups/;
+            reg = /\/admin\/client\/dellist/;
         $(iframe).each(function (i,item) {
             if (reg.test($(item).html())) {
                 var riframe = iframe.eq(i).find('iframe');

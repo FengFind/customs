@@ -91,7 +91,8 @@ $(function(){
     $('#title').val(parent.pdata.title);
     $('#module').val(parent.pdata.module);
     $('#description').val(parent.pdata.description);
-	if (parent.pdata.status === 1) {
+    console.log(typeof parent.pdata.status);
+	if (parent.pdata.status == 1) {
         $('#status-1').attr('checked','checked');
     }else{
         $('#status-2').attr('checked','checked');

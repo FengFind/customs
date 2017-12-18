@@ -282,21 +282,15 @@ class Order extends Model {
         $limit = $this->request->param("limit");
         $page = $this->request->param("page");
         $where = ['batch_no'=> $batch_no];
-        $field = "*,@i:=@i+1 as autonum";
+        $field = "*";
         $orderPreview = Loader::model("OrderPreview");
-        //数据集序号设定
-        $i = 0;
-        if ($page>1) {
-            $i = ($page-1)*$limit;
-        }
-        $orderPreview->query("set @i=".$i);
         $data = $orderPreview->field($field)->where($where)->page($page,$limit)->select();
         $dataCount = $orderPreview->where($where)->count();
         $data_format = [
             "code" => 0,
             "msg" => "success",
             "count" => $dataCount,
-            "data" => $data,
+            "data" => createNums($data,$page,$limit),
         ];
         return $data_format;
     }
@@ -398,7 +392,7 @@ class Order extends Model {
         if ($page>1) {
             $i = ($page-1)*$limit+1;
         }
-        $orderModel->query("set @i=".$i);
+//        $orderModel->query("set @i=".$i);
         $data = $orderModel->alias($alias)->join($join)->where($where)->group($group)->field($field)->page($page,$limit)->select();
         foreach ($data as $k => $record) {
             $data[$k]['autonum'] = $i++;

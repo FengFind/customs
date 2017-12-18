@@ -337,7 +337,8 @@
                         maxmin: true,
                         shade: 0,
                         end: function(){
-                            table.reload('main');
+//                            table.reload('main');
+                            location.replace(location.href);
                             $.post("{:url('admin/Order/preview')}",{delbatch: res.data.batch_no,req: 'del'},function (res) {});
                             $.post("{:url('admin/Order/clearUploads')}",function (res) {});
                         }

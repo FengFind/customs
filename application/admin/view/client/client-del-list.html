@@ -110,6 +110,7 @@
                             obj.del();
                             layer.close(index);
                             table.reload('main');
+                            refleshClientList();
                         }else{
                             layer.close(index);
                             if (typeof res !== 'string') {
@@ -141,6 +142,7 @@
                     $.post('{:url("admin/client/recover")}',{data: str.slice(0,-1)},function (res) {
                         if (res.code == '0000') {
                             table.reload('main');
+                            refleshClientList();
                             layer.close(index);
                         }else{
                             layer.close(index);
@@ -176,10 +178,10 @@
     }
 
     //刷新用户组列表
-    function refleshGroupsList() {
+    function refleshClientList() {
         var topWindow = $(window.parent.document),
             iframe = topWindow.find('#iframe_box .show_iframe'),
-            reg = /\/admin\/admin\/groups/;
+            reg = /\/admin\/client\/index/;
         $(iframe).each(function (i,item) {
             if (reg.test($(item).html())) {
                 var riframe = iframe.eq(i).find('iframe');

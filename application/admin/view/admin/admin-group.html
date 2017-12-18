@@ -157,15 +157,15 @@
             if (data.length>0) {
                 //将被选中的数据对象转换成字符串，后通过表单向后台提交并获取导出的文件
                 var str = "";
-                var flag = true;
+//                var flag = true;
                 $(data).each(function (index,obj) {
-                    if (obj.status ===9) {
-                        layer.open({content:'选项中含有超级管理员，不能进行删除操作！！！'});
-                        flag = false;
-                    }
+//                    if (obj.status ==9) {
+//                        layer.open({content:'选项中含有超级管理员，不能进行删除操作！！！'});
+//                        flag = false;
+//                    }
                     str+= obj.id+"|";
                 });
-                if (!flag) {return};
+//                if (!flag) {return};
                 layer.confirm('确定删除？', function(index){
                     $.post('{:url("admin/admin/delGroups")}',{data: str.slice(0,-1)},function (res) {
                         if (res.code == '0000') {

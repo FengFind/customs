@@ -92,7 +92,7 @@ class Client extends Common {
      */
     public function export() {
         $pid = $this->request->param('pid');
-        $com_name = $this->request->param('clientname');
+        $com_name = $this->request->param('clientname','','rawurldecode');
         $com_id = $this->request->param('com_id');
         if ($pid === null) {
             return $this->orderModel->getOrderBatch($com_id);
@@ -108,7 +108,7 @@ class Client extends Common {
     public function orderLists() {
         $transbatch = $this->request->param('batch');
         $batch = $this->request->param('transbatch');
-        $client_name = $this->request->param('clientname');
+        $client_name = $this->request->param('clientname','','rawurldecode');
         if ($transbatch === null) {
             return $this->orderModel->getOrderDatas($batch);
         }else{
