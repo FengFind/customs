@@ -34,7 +34,7 @@ class Login extends \think\Model {
                 Session::set('username',$request['username']);
                 Session::set('uid',$result['id']);
                 $admin->save(['ip'=>$request['ip']],['username'=>$request['username']]);
-                return $this->setData('',0000);
+                return $this->setData('','0000');
             }else{
                 return $this->setData('密码错误',1003);
             }
@@ -45,7 +45,7 @@ class Login extends \think\Model {
 
     public function drop() {
         Session::delete('username');
-        return $this->setData('',0000);
+        return $this->setData('','0000');
     }
 
     public function setData($info,$code) {

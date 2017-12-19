@@ -343,10 +343,6 @@ class OrderBatch extends Model
         $goods_fields = Loader::model("OrderGoods")->getTableFields();
         //移除不需要的字段
         $gfields_no = ["id","order_no","item_no","item_describe","bar_code","qty2","unit2","goods_note","gjcode"];
-        //由于数据位置已在数组中固定，故要保持商品字段与数据位置对应，适当进行偏移
-//        foreach ($head_fields as $k => $val) {
-//            $temp[$k] = "";
-//        }
         $jiushou_fields = array_merge($head_fields,array_diff($goods_fields,$gfields_no));
         //交换一些字段顺序，保正与数据对应
         $field_index1 = array_search('qty1',$jiushou_fields);
@@ -379,6 +375,7 @@ class OrderBatch extends Model
                         ->where(["a.batch_time"=>$batch])
                         ->select();
 //                    $excelObj->exportExcel($res,$datatype,$batch,true);
+                    $res = exportDecode($res);
                     if ($datatype == 0) {
                         $excelObj->exportExcel($res,$datatype,$batch,true,Excel.'batch');
                     }else{
@@ -408,6 +405,7 @@ class OrderBatch extends Model
                     ->field($field_temp)
                     ->where($where)
                     ->select();
+                $res = exportDecode($res);
                 if ($ex_type == 1) {
                     $excelObj->exportExcel($res,$ex_type-1,$ex_batch,false,Excel.$ex_batch);
                 }else{

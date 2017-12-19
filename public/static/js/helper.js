@@ -16,3 +16,8 @@ function setAlign(listarr,alignType) {
     });
     $(document.body).append( '<style>'+html+'</style>');
 }
+
+//请求时的过渡动画，防止用户重复点击
+function reqTransation(bool) {
+    bool ? layer.load(0,{shade:0.3}) : layer.closeAll('loading');
+}

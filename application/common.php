@@ -31,3 +31,12 @@ function createNums($data,$page,$limit) {
     }
     return $data;
 }
+
+//导出excel文件时，对个别字段进行转义
+function exportDecode($data) {
+    foreach ($data as $key => $row) {
+        $data[$key]['consignee_address'] = html_entity_decode($row['consignee_address']);
+        $data[$key]['item_name'] = html_entity_decode($row['item_name']);
+    }
+    return $data;
+}

@@ -39,7 +39,7 @@ class Login extends \think\Controller {
     public function logout() {
         $data = Loader::model('login')->drop();
         if ($data['code']==0000) {
-            return $this->fetch('Login/login');
+            return $this->fetch('login');
         }else {
             $this->error($data['errorInfo'],'Index/index','',1);
         }

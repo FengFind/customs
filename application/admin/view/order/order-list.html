@@ -166,7 +166,7 @@
 			<a onclick="fillPopover()" class="btn  btn-success radius" data-title="导入Excel文件" href="javascript:;"><i class="Hui-iconfont">&#xe642;</i> 导入订单</a>
 			<a id="upload_excel" hidden data-title="导入中转按钮" href="javascript:;"><i class="Hui-iconfont">&#xe642;</i> </a>
 			<span id="filetips" hidden style="padding: 0 10px;color: #999;vertical-align: middle"></span>
-			<a id="upcommit" class="btn  btn-secondary radius" onclick="uploading(this)" data-title="开始导入" href="javascript:;"><i class="Hui-iconfont">&#xe645;</i> 开始导入</a>
+			<a id="upcommit" class="btn  btn-secondary radius" onclick="reqTransation(true)" data-title="开始导入" href="javascript:;"><i class="Hui-iconfont">&#xe645;</i> 开始导入</a>
 			<a id="open-tab" hidden data-href="" data-title="" href="javascript:void(0)"></a>
 		</span>
 		<!--<span class="l total mr-10">共有数据：<strong></strong> 条</span>-->
@@ -323,7 +323,7 @@
             }
             , done: function (res) {
                 //上传完毕回调
-                layer.closeAll('loading');
+                reqTransation(false);
                 $("#filetips").hide();
                 $("#upcommit").hide();
                 if (res.code == 0000) {
@@ -352,7 +352,7 @@
             }
             , error: function (res) {
                 //请求异常回调
-                layer.closeAll('loading');
+                reqTransation(false);
                 $("#filetips").hide();
                 $("#upcommit").hide();
                 layer.open({
@@ -525,11 +525,6 @@
             area: ['500px','300px'],
             maxmin: true
         });
-    }
-
-    //上传请求时的动画
-    function uploading() {
-        layer.load(0,{shade:0.3}); //换了种风格
     }
 
     //显示高级查询

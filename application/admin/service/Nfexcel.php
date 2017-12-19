@@ -10,6 +10,7 @@ namespace app\admin\service;
 
 use think\Db;
 use app\common\controller\Excel;
+use think\db\Query;
 
 class Nfexcel {
 	private $val = [
@@ -249,6 +250,7 @@ class Nfexcel {
                     'country', 'qty', 'qty1', 'unit', 'unit1', 'price', 'total_price','pack_no'])
                 ->where(['a.batch_time' => $batch])
                 ->select();
+            $data = exportDecode($data);
             if(!$data) return;
             if ($both === true) {
                 $b_path = Excel.'both'.DIRECTORY_SEPARATOR.$batch;
@@ -262,7 +264,7 @@ class Nfexcel {
                 $this->waybillExcel($batch, $data);
             }
             $path = $both ? Excel.'both' : Excel.$batch;
-        }else if ($batch === null && $both === false){
+        }else if ($batch === null && $both === false) {
             $path = Excel.'batch';
         }else if ($batch === null && $both === true) {
             $path = Excel.'both';
